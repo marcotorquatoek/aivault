@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: 2.3 -->
+<!-- version: 3.0 -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -7,7 +7,6 @@
   <title>AI Links Vault</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-
   <style>
     :root {
       --bg: #f8f7f4;
@@ -28,132 +27,101 @@
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
     .app { display: flex; flex-direction: column; height: 100vh; max-width: 480px; margin: 0 auto; }
 
-    /* Header */
     .header { padding: 22px 20px 10px; background: var(--surface); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
     .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
     .header h1 { font-size: 19px; font-weight: 500; letter-spacing: -0.3px; }
     .version-badge { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-hint); background: var(--bg); border: 0.5px solid var(--border); padding: 3px 8px; border-radius: 20px; }
     .status { font-size: 12px; color: var(--text-hint); }
 
-    /* Search */
     .search-wrap { padding: 10px 16px; background: var(--surface); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
     .search-inner { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 0.5px solid var(--border-strong); border-radius: 20px; padding: 8px 14px; }
-    .search-inner i { font-size: 16px; color: var(--text-hint); flex-shrink: 0; }
+    .search-icon { font-size: 14px; color: var(--text-hint); flex-shrink: 0; }
     .search-inner input { flex: 1; border: none; background: transparent; font-size: 14px; color: var(--text); font-family: 'DM Sans', sans-serif; outline: none; }
     .search-inner input::placeholder { color: var(--text-hint); }
-    #search-clear { font-size: 16px; color: var(--text-hint); cursor: pointer; display: none; }
+    #search-clear { font-size: 14px; color: var(--text-hint); cursor: pointer; display: none; }
 
-    /* Main tab bar */
-    .main-tabs { display: flex; padding: 10px 16px; gap: 6px; background: var(--surface); border-bottom: 0.5px solid var(--border); flex-shrink: 0; transition: opacity 0.2s; }
-    .mtab { padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 400; cursor: pointer; border: 0.5px solid transparent; color: var(--text-muted); background: transparent; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+    .main-tabs { display: flex; padding: 10px 16px; gap: 6px; background: var(--surface); border-bottom: 0.5px solid var(--border); flex-shrink: 0; transition: opacity 0.2s; overflow-x: auto; scrollbar-width: none; }
+    .main-tabs::-webkit-scrollbar { display: none; }
+    .mtab { padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 400; cursor: pointer; border: 0.5px solid transparent; color: var(--text-muted); background: transparent; font-family: 'DM Sans', sans-serif; transition: all 0.15s; white-space: nowrap; }
     .mtab.active { background: var(--text); color: var(--accent-fg); font-weight: 500; }
 
-    /* Sub tab bar (inside Aggiungi) */
-    .sub-tabs { display: flex; gap: 0; background: var(--bg); border-bottom: 0.5px solid var(--border); flex-shrink: 0; overflow-x: auto; scrollbar-width: none; }
-    .sub-tabs::-webkit-scrollbar { display: none; }
-    .stab { flex: 1; padding: 10px 8px; font-size: 13px; font-weight: 400; cursor: pointer; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); background: transparent; font-family: 'DM Sans', sans-serif; transition: all 0.15s; text-align: center; white-space: nowrap; }
-    .stab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
-
-    /* Scroll area */
     .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .section { padding: 16px; }
 
-    /* Folder list */
-    .folder-list { display: flex; flex-direction: column; gap: 8px; }
-    .folder-row { display: flex; align-items: center; gap: 10px; padding: 14px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
-    .folder-row-main { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; min-width: 0; }
-    .folder-icon { font-size: 19px; color: var(--text-muted); flex-shrink: 0; }
-    .folder-name { flex: 1; font-size: 15px; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .folder-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-hint); background: var(--bg); border: 0.5px solid var(--border); padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
-    .folder-arrow { font-size: 16px; color: var(--text-hint); flex-shrink: 0; }
+    /* Creator list */
+    .creator-list { display: flex; flex-direction: column; gap: 8px; }
+    .creator-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
+    .creator-row-main { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; min-width: 0; }
+    .creator-bubble { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: white; flex-shrink: 0; }
+    .creator-handle { flex: 1; font-size: 15px; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .creator-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-hint); background: var(--bg); border: 0.5px solid var(--border); padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
+    .chevron { font-size: 14px; color: var(--text-hint); flex-shrink: 0; }
+
+    /* Row actions */
     .row-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .icon-btn { height: 32px; padding: 0 10px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--text-muted); font-family: 'DM Sans', sans-serif; gap: 4px; white-space: nowrap; }
+    .icon-btn { height: 30px; padding: 0 10px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; font-size: 12px; font-weight: 500; color: var(--text-muted); font-family: 'DM Sans', sans-serif; gap: 4px; white-space: nowrap; }
     .icon-btn:active { background: #eee; }
     .icon-btn.danger { border-color: rgba(192,57,43,0.2); background: var(--danger-bg); color: var(--danger); }
     .icon-btn.danger:active { background: #f9e0de; }
 
-    /* Tipologie list */
-    .tipo-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 8px; }
-    .tipo-pill { font-size: 13px; color: var(--text); background: var(--bg); border: 0.5px solid var(--border); padding: 4px 12px; border-radius: 20px; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tipo-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-hint); flex-shrink: 0; }
-
     /* Link cards */
     .link-card { padding: 14px 16px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 8px; }
     .link-card-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
-    .creator-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--bg); border: 0.5px solid var(--border); }
-    .creator-avatar-placeholder { width: 36px; height: 36px; border-radius: 50%; background: var(--bg); border: 0.5px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .creator-avatar-placeholder i { font-size: 18px; color: var(--text-hint); }
+    .link-bubble { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: white; flex-shrink: 0; }
     .link-info { flex: 1; min-width: 0; }
     .link-title { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.4; margin-bottom: 4px; }
     .link-meta { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
-    .meta-creator { font-size: 12px; color: var(--text-muted); }
+    .meta-handle { font-size: 12px; color: var(--text-muted); }
     .meta-tag { font-size: 11px; color: var(--text-hint); background: var(--bg); border: 0.5px solid var(--border); padding: 2px 8px; border-radius: 10px; }
     .link-actions { display: flex; gap: 8px; }
     .btn-open { flex: 1; padding: 9px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text); font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-open:active { background: #eee; }
-    .btn-edit { padding: 9px 12px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; display: flex; align-items: center; }
+    .btn-edit { padding: 9px 12px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
     .btn-edit:active { background: #eee; }
-    .btn-del { padding: 9px 12px; background: var(--danger-bg); border: 0.5px solid rgba(192,57,43,0.2); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--danger); font-family: 'DM Sans', sans-serif; display: flex; align-items: center; }
+    .btn-del { padding: 9px 12px; background: var(--danger-bg); border: 0.5px solid rgba(192,57,43,0.2); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--danger); font-family: 'DM Sans', sans-serif; }
     .btn-del:active { background: #f9e0de; }
 
     /* Search */
     .search-results-header { font-size: 12px; color: var(--text-hint); margin-bottom: 12px; font-family: 'DM Mono', monospace; }
     mark.hl { background: #fff3cd; border-radius: 2px; padding: 0 1px; font-style: normal; }
 
-    /* Back */
     .back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer; margin-bottom: 16px; background: none; border: none; font-family: 'DM Sans', sans-serif; padding: 0; }
-    .folder-heading { font-size: 17px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .section-heading { font-size: 17px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+
+    /* Cartelle list */
+    .cartella-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 8px; }
+    .cartella-name { flex: 1; font-size: 15px; color: var(--text); }
+    .cartella-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-hint); flex-shrink: 0; }
 
     /* Form */
     .form-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 8px; }
     .form-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 14px; }
     .input-group { margin-bottom: 13px; }
     .label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
-    input[type=text], select, textarea { width: 100%; padding: 11px 14px; font-size: 15px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; -webkit-appearance: none; appearance: none; }
-    input[type=text]:focus, select:focus, textarea:focus { outline: none; border-color: var(--text); }
-    .divider-light { border: none; border-top: 0.5px solid var(--border); margin: 16px 0; }
+    input[type=text], select { width: 100%; padding: 11px 14px; font-size: 15px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; -webkit-appearance: none; appearance: none; }
+    input[type=text]:focus, select:focus { outline: none; border-color: var(--text); }
     .btn-primary { width: 100%; padding: 13px; background: var(--text); color: var(--accent-fg); border: none; border-radius: var(--radius); font-size: 15px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
     .btn-primary:active { opacity: 0.8; }
     .btn-primary:disabled { opacity: 0.4; cursor: default; }
     .input-prefix { position: relative; }
     .input-prefix span { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--text-muted); pointer-events: none; }
     .input-prefix input { padding-left: 26px; }
-    .section-label { font-size: 11px; font-weight: 500; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; margin-top: 4px; }
+    .section-label { font-size: 11px; font-weight: 500; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; margin-top: 18px; }
 
-    /* Empty */
-    .empty { text-align: center; padding: 48px 20px; color: var(--text-hint); font-size: 14px; }
-    .empty i { font-size: 36px; display: block; margin-bottom: 10px; }
+    .empty { text-align: center; padding: 48px 20px; color: var(--text-hint); font-size: 14px; line-height: 1.6; }
+    .empty-icon { font-size: 32px; display: block; margin-bottom: 10px; }
 
-    /* Bottom Sheet */
-    .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0); transition: background 0.3s; z-index: 100; pointer-events: none; }
-    .sheet-overlay.open { background: rgba(0,0,0,0.45); pointer-events: all; }
-    .sheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%); width: 100%; max-width: 480px; background: var(--surface); border-radius: 20px 20px 0 0; transition: transform 0.35s cubic-bezier(0.32,0.72,0,1); z-index: 101; display: flex; flex-direction: column; max-height: 85vh; }
-    .sheet.open { transform: translateX(-50%) translateY(0); }
-    .sheet-handle { width: 36px; height: 4px; background: var(--border-strong); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
-    .sheet-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px 10px; border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
-    .sheet-title { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; word-break: break-word; line-height: 1.4; }
-    .sheet-close { width: 30px; height: 30px; border: none; background: var(--bg); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .sheet-close i { font-size: 16px; color: var(--text-muted); }
-    .sheet-actions { display: flex; gap: 8px; padding: 10px 16px; border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
-    .sheet-btn { flex: 1; padding: 9px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text); font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .sheet-btn:active { background: #eee; }
-    .sheet-iframe-wrap { flex: 1; overflow: hidden; min-height: 55vh; }
-    .sheet-iframe { width: 100%; height: 100%; border: none; display: block; }
-    .sheet-blocked { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 40px 24px; text-align: center; height: 100%; }
-    .sheet-blocked i { font-size: 40px; color: var(--text-hint); }
-    .sheet-blocked p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-
-    /* Edit modal sheet */
+    /* Modal */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0); transition: background 0.25s; z-index: 150; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
     .modal-overlay.open { background: rgba(0,0,0,0.45); pointer-events: all; }
-    .modal { width: 100%; max-width: 480px; background: var(--surface); border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32,0.72,0,1); padding: 0 0 32px; max-height: 90vh; overflow-y: auto; }
+    .modal { width: 100%; max-width: 480px; background: var(--surface); border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.32,0.72,0,1); padding-bottom: 32px; max-height: 90vh; overflow-y: auto; }
     .modal.open { transform: translateY(0); }
     .modal-handle { width: 36px; height: 4px; background: var(--border-strong); border-radius: 2px; margin: 12px auto 0; }
     .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; border-bottom: 0.5px solid var(--border); }
     .modal-header h3 { font-size: 15px; font-weight: 500; }
+    .modal-close { width: 30px; height: 30px; border: none; background: var(--bg); border-radius: 50%; cursor: pointer; font-size: 16px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
     .modal-body { padding: 16px; }
 
-    /* Toast */
     .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--accent-fg); padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 300; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
     .toast.show { opacity: 1; }
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: -2px; margin-right: 6px; }
@@ -167,52 +135,31 @@
   <div class="header">
     <div class="header-top">
       <h1>AI Links Vault</h1>
-      <span class="version-badge">v2.3</span>
+      <span class="version-badge">v3.0</span>
     </div>
     <div class="status" id="status-text">Connessione…</div>
   </div>
 
   <div class="search-wrap">
     <div class="search-inner">
-      🔍
-      <input type="text" id="search-input" placeholder="Cerca titolo, creator, categoria…" oninput="onSearch()" />
-      <span id="search-clear" onclick="clearSearch()" style="cursor:pointer;font-size:16px;color:var(--text-hint)">✕</span>
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Cerca titolo, creator, cartella…" oninput="onSearch()" />
+      <span id="search-clear" onclick="clearSearch()">✕</span>
     </div>
   </div>
 
   <div class="main-tabs" id="main-tabs">
     <button class="mtab active" onclick="showMain('browse')" id="mtab-browse">Sfoglia</button>
     <button class="mtab" onclick="showMain('link')" id="mtab-link">+ Link</button>
-    <button class="mtab" onclick="showMain('folder')" id="mtab-folder">+ Cartella</button>
-    <button class="mtab" onclick="showMain('tipo')" id="mtab-tipo">+ Tipologia</button>
+    <button class="mtab" onclick="showMain('creator')" id="mtab-creator">+ Creator</button>
+    <button class="mtab" onclick="showMain('cartella')" id="mtab-cartella">+ Cartella</button>
   </div>
 
   <div class="scroll-area">
     <div id="view-browse" class="section"></div>
     <div id="view-link" class="section" style="display:none"></div>
-    <div id="view-folder" class="section" style="display:none"></div>
-    <div id="view-tipo" class="section" style="display:none"></div>
-  </div>
-</div>
-
-<!-- Link preview sheet -->
-<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
-<div class="sheet" id="sheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-header">
-    <div class="sheet-title" id="sheet-title"></div>
-    <button class="sheet-close" onclick="closeSheet()">✕</button>
-  </div>
-  <div class="sheet-actions">
-    <button class="sheet-btn" onclick="copySheetLink()">📋 Copia link</button>
-    <button class="sheet-btn" onclick="openSheetExternal()">↗ Apri browser</button>
-  </div>
-  <div class="sheet-iframe-wrap">
-    <iframe class="sheet-iframe" id="sheet-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
-    <div class="sheet-blocked" id="sheet-blocked">
-      🚫
-      <p>Questo sito non permette l'anteprima in-app.<br>Usa <strong>Apri browser</strong> per visitarlo.</p>
-    </div>
+    <div id="view-creator" class="section" style="display:none"></div>
+    <div id="view-cartella" class="section" style="display:none"></div>
   </div>
 </div>
 
@@ -222,7 +169,7 @@
     <div class="modal-handle"></div>
     <div class="modal-header">
       <h3 id="modal-title">Modifica</h3>
-      <button class="sheet-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
@@ -235,46 +182,57 @@ const SB = 'https://kyqhkromuwjenkffvkqe.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5cWhrcm9tdXdqZW5rZmZ2a3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDQ1NzAsImV4cCI6MjA5NDA4MDU3MH0.QuDYyRVZy0MSxVzd3KVT8R6I1z8BFU3kh0vgr-7BiQw';
 const H = {'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY};
 
-let folders=[], links=[], tipologie=[], currentFolder=null, sheetUrl='', currentMain='browse';
+let creators=[], links=[], cartelle=[], currentCreator=null, currentMain='browse';
+
+const COLORS = ['#e07b54','#5b8dd9','#6abf8a','#b87fcf','#d4a843','#5bbfbf','#d96b8a','#7a9e6b','#c46b3a','#7b7fd4'];
+function colorFor(str) {
+  let h=0; for(let i=0;i<(str||'').length;i++) h=(h*31+str.charCodeAt(i))>>>0;
+  return COLORS[h % COLORS.length];
+}
+function initials(str) {
+  const s=(str||'?').replace(/^@/,'');
+  return s.slice(0,2).toUpperCase();
+}
+function bubble(str, size) {
+  const sz = size||36;
+  return `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${colorFor(str)};display:flex;align-items:center;justify-content:center;font-size:${Math.round(sz*0.36)}px;font-weight:500;color:white;flex-shrink:0">${initials(str)}</div>`;
+}
 
 /* ── API ── */
 async function api(method, path, body) {
-  const r = await fetch(SB+'/rest/v1/'+path, {
-    method, headers:{...H,'Prefer':method==='POST'?'return=representation':''},
+  const opts = {
+    method,
+    headers: {...H, 'Prefer': method==='POST' ? 'return=representation' : 'return=minimal'},
     body: body ? JSON.stringify(body) : undefined
-  });
-  if (!r.ok) throw new Error(await r.text());
-  return method==='DELETE' ? null : r.json();
+  };
+  const r = await fetch(SB+'/rest/v1/'+path, opts);
+  if (!r.ok) {
+    const txt = await r.text();
+    throw new Error(txt || r.status);
+  }
+  if (method==='DELETE' || method==='PATCH') return null;
+  const text = await r.text();
+  return text ? JSON.parse(text) : null;
 }
 
 async function loadAll() {
   try {
-    [folders, links, tipologie] = await Promise.all([
-      api('GET','folders?select=*&order=created_at.asc'),
+    [creators, links, cartelle] = await Promise.all([
+      api('GET','creators?select=*&order=created_at.asc'),
       api('GET','links?select=*&order=created_at.desc'),
-      api('GET','tipologie?select=*&order=created_at.asc')
+      api('GET','cartelle?select=*&order=created_at.asc')
     ]);
     updateStatus();
-  } catch(e) { document.getElementById('status-text').textContent='Errore connessione'; }
+  } catch(e) {
+    document.getElementById('status-text').textContent = 'Errore: '+e.message;
+  }
   renderAll();
 }
 
 function updateStatus() {
-  document.getElementById('status-text').textContent = folders.length+' cartelle · '+links.length+' link';
+  document.getElementById('status-text').textContent = creators.length+' creator · '+links.length+' link';
 }
-
-function renderAll() { renderBrowse(); renderViewLink(); renderViewFolder(); renderViewTipo(); }
-
-/* ── Tabs ── */
-function showMain(tab) {
-  clearSearch();
-  ['browse','link','folder','tipo'].forEach(t => {
-    document.getElementById('view-'+t).style.display = t===tab ? '' : 'none';
-    document.getElementById('mtab-'+t).className = 'mtab'+(t===tab?' active':'');
-  });
-  currentMain = tab;
-  if (tab==='browse') { currentFolder=null; renderBrowse(); }
-}
+function renderAll() { renderBrowse(); renderViewLink(); renderViewCreator(); renderViewCartella(); }
 
 /* ── Utils ── */
 function toast(msg) {
@@ -287,64 +245,71 @@ function hlText(text,q){
   const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
   return esc(text).replace(re,'<mark class="hl">$1</mark>');
 }
-function avatarHtml(creator){
-  if(!creator) return `<div class="creator-avatar-placeholder">👤</div>`;
-  const h=creator.replace(/^@/,'');
-  return `<img class="creator-avatar" src="https://unavatar.io/instagram/${esc(h)}" alt="${esc(creator)}" onerror="this.outerHTML='<div class=\\'creator-avatar-placeholder\\'>👤</div>'" />`;
+
+/* ── Tabs ── */
+function showMain(tab) {
+  clearSearch();
+  ['browse','link','creator','cartella'].forEach(t=>{
+    document.getElementById('view-'+t).style.display = t===tab?'':'none';
+    document.getElementById('mtab-'+t).className = 'mtab'+(t===tab?' active':'');
+  });
+  currentMain=tab;
+  if(tab==='browse'){ currentCreator=null; renderBrowse(); }
 }
 
 /* ── Browse ── */
-function renderBrowse(){
+function renderBrowse() {
   const el=document.getElementById('view-browse');
   el.className='section fade-in';
-  if(currentFolder){
-    const fl=links.filter(l=>l.folder_id===currentFolder.id);
-    let html=`<button class="back-btn" onclick="currentFolder=null;renderBrowse()">← Cartelle</button>
-    <div class="folder-heading">📁 ${esc(currentFolder.name)}</div>`;
-    if(!fl.length) html+=`<div class="empty">🔖Nessun link qui</div>`;
+  if(currentCreator){
+    const fl=links.filter(l=>l.creator_id===currentCreator.id);
+    let html=`<button class="back-btn" onclick="currentCreator=null;renderBrowse()">← Creator</button>
+    <div class="section-heading">${bubble(currentCreator.name,32)}<span>@${esc(currentCreator.name.replace(/^@/,''))}</span></div>`;
+    if(!fl.length) html+=`<div class="empty"><span class="empty-icon">🔖</span>Nessun link per questo creator</div>`;
     else fl.forEach(l=>{ html+=linkCardHtml(l,''); });
     el.innerHTML=html;
   } else {
-    if(!folders.length){ el.innerHTML=`<div class="empty">📂Nessuna cartella<br><small style="margin-top:8px;display:block">Usa "+ Cartella" per crearne una</small></div>`; return; }
-    let html='<div class="folder-list">';
-    folders.forEach(f=>{
-      const count=links.filter(l=>l.folder_id===f.id).length;
-      html+=`<div class="folder-row">
-        <div class="folder-row-main" onclick='openFolder(${JSON.stringify(f)})'>
-          📁
-          <span class="folder-name">${esc(f.name)}</span>
-          <span class="folder-count">${count}</span>
-          ›
+    if(!creators.length){ el.innerHTML=`<div class="empty"><span class="empty-icon">👤</span>Nessun creator ancora<br><small>Usa "+ Creator" per aggiungerne uno</small></div>`; return; }
+    let html='<div class="creator-list">';
+    creators.forEach(c=>{
+      const count=links.filter(l=>l.creator_id===c.id).length;
+      html+=`<div class="creator-row">
+        <div class="creator-row-main" onclick='openCreator(${JSON.stringify(c)})'>
+          ${bubble(c.name)}
+          <span class="creator-handle">@${esc(c.name.replace(/^@/,''))}</span>
+          <span class="creator-count">${count}</span>
+          <span class="chevron">›</span>
         </div>
         <div class="row-actions">
-          <button class="icon-btn" onclick='editFolder(${JSON.stringify(f)})'>✏️ Modifica</button>
-          <button class="icon-btn danger" onclick="deleteFolder('${f.id}')">🗑 Elimina</button>
+          <button class="icon-btn" onclick='editCreator(${JSON.stringify(c)})'>✏️ Modifica</button>
+          <button class="icon-btn danger" onclick="deleteCreator('${c.id}')">🗑 Elimina</button>
         </div>
       </div>`;
     });
     el.innerHTML=html+'</div>';
   }
 }
-function openFolder(f){ currentFolder=f; renderBrowse(); }
+function openCreator(c){ currentCreator=c; renderBrowse(); }
 
 function linkCardHtml(l,q){
-  const folder=folders.find(f=>f.id===l.folder_id);
+  const creator=creators.find(c=>c.id===l.creator_id);
+  const cartella=cartelle.find(c=>c.id===l.cartella_id);
+  const handle=creator?creator.name:'?';
   const tags=[
-    l.creator?`<span class="meta-creator">${hlText(l.creator,q)}</span>`:'',
-    l.tipologia?`<span class="meta-tag">${hlText(l.tipologia,q)}</span>`:'',
-    folder?`<span class="meta-tag">📁${hlText(folder.name,q)}</span>`:''
+    creator?`<span class="meta-handle">${hlText('@'+handle.replace(/^@/,''),q)}</span>`:'',
+    cartella?`<span class="meta-tag">📁 ${hlText(cartella.name,q)}</span>`:'',
   ].filter(Boolean).join('');
   const uE=esc(l.url), tE=esc(l.title);
   return `<div class="link-card">
     <div class="link-card-top">
-      ${avatarHtml(l.creator)}
+      ${bubble(handle)}
       <div class="link-info">
         <div class="link-title">${hlText(l.title,q)}</div>
         <div class="link-meta">${tags}</div>
       </div>
     </div>
     <div class="link-actions">
-      <button class="btn-open" onclick="openSheet('${uE}','${tE}')">▶ Apri</button>
+      <button class="btn-open" onclick="window.open('${uE}','_blank')">↗ Apri</button>
       <button class="btn-edit" onclick='editLink(${JSON.stringify(l)})'>✏️</button>
       <button class="btn-del" onclick="deleteLink('${l.id}')">🗑</button>
     </div>
@@ -354,8 +319,8 @@ function linkCardHtml(l,q){
 /* ── View: + Link ── */
 function renderViewLink(){
   const el=document.getElementById('view-link');
-  const fOpts=folders.map(f=>`<option value="${f.id}">${esc(f.name)}</option>`).join('');
-  const tOpts=tipologie.map(t=>`<option value="${esc(t.name)}">${esc(t.name)}</option>`).join('');
+  const cOpts=creators.map(c=>`<option value="${c.id}">${esc('@'+c.name.replace(/^@/,''))}</option>`).join('');
+  const kOpts=cartelle.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
   el.innerHTML=`
     <div class="form-card">
       <div class="form-title">Nuovo link</div>
@@ -363,34 +328,60 @@ function renderViewLink(){
         <input type="text" id="nl-title" placeholder="es. Guida Midjourney V6" /></div>
       <div class="input-group"><div class="label">URL</div>
         <input type="text" id="nl-url" placeholder="https://…" autocapitalize="none" autocorrect="off" /></div>
-      <div class="input-group"><div class="label">Creator Instagram (opzionale)</div>
-        <div class="input-prefix"><span>@</span>
-        <input type="text" id="nl-creator" placeholder="handle" autocapitalize="none" autocorrect="off" /></div></div>
-      <div class="input-group"><div class="label">Tipologia</div>
-        <select id="nl-tipo">${tipologie.length?'<option value="">— Nessuna —</option>'+tOpts:'<option value="">— Crea prima una tipologia —</option>'}</select></div>
+      <div class="input-group"><div class="label">Creator</div>
+        <select id="nl-creator">${creators.length?cOpts:'<option value="">— Aggiungi prima un creator —</option>'}</select></div>
       <div class="input-group"><div class="label">Cartella</div>
-        <select id="nl-folder">${folders.length?fOpts:'<option value="">— Crea prima una cartella —</option>'}</select></div>
+        <select id="nl-cartella"><option value="">— Nessuna —</option>${kOpts}</select></div>
       <button class="btn-primary" onclick="addLink()" id="add-link-btn">Salva link</button>
     </div>`;
 }
 
-/* ── View: + Cartella ── */
-function renderViewFolder(){
-  const el=document.getElementById('view-folder');
+/* ── View: + Creator ── */
+function renderViewCreator(){
+  const el=document.getElementById('view-creator');
   let list='';
-  if(folders.length){
-    list='<div class="section-label" style="margin-top:20px">Cartelle esistenti</div>';
-    folders.forEach(f=>{
-      const count=links.filter(l=>l.folder_id===f.id).length;
-      list+=`<div class="folder-row" style="margin-bottom:8px">
-        <div class="folder-row-main" style="cursor:default">
-          📁
-          <span class="folder-name">${esc(f.name)}</span>
-          <span class="folder-count">${count}</span>
+  if(creators.length){
+    list='<div class="section-label">Creator esistenti</div>';
+    creators.forEach(c=>{
+      const count=links.filter(l=>l.creator_id===c.id).length;
+      list+=`<div class="creator-row" style="margin-bottom:8px">
+        <div class="creator-row-main" style="cursor:default">
+          ${bubble(c.name)}
+          <span class="creator-handle">@${esc(c.name.replace(/^@/,''))}</span>
+          <span class="creator-count">${count}</span>
         </div>
         <div class="row-actions">
-          <button class="icon-btn" onclick='editFolder(${JSON.stringify(f)})'>✏️ Modifica</button>
-          <button class="icon-btn danger" onclick="deleteFolder('${f.id}')">🗑 Elimina</button>
+          <button class="icon-btn" onclick='editCreator(${JSON.stringify(c)})'>✏️ Modifica</button>
+          <button class="icon-btn danger" onclick="deleteCreator('${c.id}')">🗑 Elimina</button>
+        </div>
+      </div>`;
+    });
+  }
+  el.innerHTML=`
+    <div class="form-card">
+      <div class="form-title">Nuovo creator</div>
+      <div class="input-group"><div class="label">Handle Instagram</div>
+        <div class="input-prefix"><span>@</span>
+        <input type="text" id="nc-name" placeholder="lumonboy" autocapitalize="none" autocorrect="off" /></div></div>
+      <button class="btn-primary" onclick="addCreator()">Aggiungi creator</button>
+    </div>${list}`;
+}
+
+/* ── View: + Cartella ── */
+function renderViewCartella(){
+  const el=document.getElementById('view-cartella');
+  let list='';
+  if(cartelle.length){
+    list='<div class="section-label">Cartelle esistenti</div>';
+    cartelle.forEach(c=>{
+      const count=links.filter(l=>l.cartella_id===c.id).length;
+      list+=`<div class="cartella-row">
+        <span style="font-size:18px">📁</span>
+        <span class="cartella-name">${esc(c.name)}</span>
+        <span class="cartella-count">${count} link</span>
+        <div class="row-actions">
+          <button class="icon-btn" onclick='editCartella(${JSON.stringify(c)})'>✏️ Modifica</button>
+          <button class="icon-btn danger" onclick="deleteCartella('${c.id}')">🗑 Elimina</button>
         </div>
       </div>`;
     });
@@ -399,35 +390,8 @@ function renderViewFolder(){
     <div class="form-card">
       <div class="form-title">Nuova cartella</div>
       <div class="input-group"><div class="label">Nome</div>
-        <input type="text" id="nf-name" placeholder="es. Tutorial AI, Ispirazione…" /></div>
-      <button class="btn-primary" onclick="addFolder()">Crea cartella</button>
-    </div>${list}`;
-}
-
-/* ── View: + Tipologia ── */
-function renderViewTipo(){
-  const el=document.getElementById('view-tipo');
-  let list='';
-  if(tipologie.length){
-    list='<div class="section-label" style="margin-top:20px">Tipologie esistenti</div>';
-    tipologie.forEach(t=>{
-      const count=links.filter(l=>l.tipologia===t.name).length;
-      list+=`<div class="tipo-row">
-        <span class="tipo-pill">${esc(t.name)}</span>
-        <span class="tipo-count">${count} link</span>
-        <div class="row-actions">
-          <button class="icon-btn" onclick='editTipo(${JSON.stringify(t)})'>✏️ Modifica</button>
-          <button class="icon-btn danger" onclick="deleteTipo('${t.id}','${esc(t.name)}')">🗑 Elimina</button>
-        </div>
-      </div>`;
-    });
-  }
-  el.innerHTML=`
-    <div class="form-card">
-      <div class="form-title">Nuova tipologia</div>
-      <div class="input-group"><div class="label">Nome</div>
-        <input type="text" id="nt-name" placeholder="es. Video, AI Tools, Creativa…" /></div>
-      <button class="btn-primary" onclick="addTipologia()">Crea tipologia</button>
+        <input type="text" id="nk-name" placeholder="es. Tutorial, Ispirazione, AI Tools…" /></div>
+      <button class="btn-primary" onclick="addCartella()">Crea cartella</button>
     </div>${list}`;
 }
 
@@ -435,18 +399,18 @@ function renderViewTipo(){
 async function addLink(){
   const title=document.getElementById('nl-title').value.trim();
   const url=document.getElementById('nl-url').value.trim();
-  const cr=document.getElementById('nl-creator').value.trim();
-  const creator=cr?'@'+cr.replace(/^@/,''):null;
-  const tipologia=document.getElementById('nl-tipo').value||null;
-  const folder_id=document.getElementById('nl-folder').value;
+  const creator_id=document.getElementById('nl-creator').value;
+  const cartella_id=document.getElementById('nl-cartella').value||null;
   if(!title) return toast('Inserisci un titolo');
   if(!url) return toast('Inserisci un URL');
-  if(!folder_id) return toast('Seleziona una cartella');
+  if(!creator_id) return toast('Seleziona un creator');
   const btn=document.getElementById('add-link-btn');
   btn.innerHTML='<span class="spinner"></span>Salvataggio…'; btn.disabled=true;
   try {
-    const res=await api('POST','links',{title,url,folder_id,creator,tipologia});
+    const res=await api('POST','links',{title,url,creator_id,cartella_id});
     links.unshift(res[0]);
+    document.getElementById('nl-title').value='';
+    document.getElementById('nl-url').value='';
     toast('Link salvato ✓'); updateStatus(); renderViewLink(); renderBrowse();
   } catch(e){ toast('Errore: '+e.message); btn.innerHTML='Salva link'; btn.disabled=false; }
 }
@@ -459,26 +423,23 @@ async function deleteLink(id){
     toast('Eliminato'); updateStatus();
     const q=document.getElementById('search-input').value.trim();
     if(q) renderSearch(q); else renderBrowse();
-    renderViewTipo();
+    renderViewCartella();
   } catch(e){ toast('Errore'); }
 }
 
 function editLink(l){
-  const fOpts=folders.map(f=>`<option value="${f.id}"${f.id===l.folder_id?' selected':''}>${esc(f.name)}</option>`).join('');
-  const tOpts=tipologie.map(t=>`<option value="${esc(t.name)}"${t.name===l.tipologia?' selected':''}>${esc(t.name)}</option>`).join('');
+  const cOpts=creators.map(c=>`<option value="${c.id}"${c.id===l.creator_id?' selected':''}>${esc('@'+c.name.replace(/^@/,''))}</option>`).join('');
+  const kOpts=cartelle.map(c=>`<option value="${c.id}"${c.id===l.cartella_id?' selected':''}>${esc(c.name)}</option>`).join('');
   document.getElementById('modal-title').textContent='Modifica link';
   document.getElementById('modal-body').innerHTML=`
     <div class="input-group"><div class="label">Titolo</div>
       <input type="text" id="el-title" value="${esc(l.title)}" /></div>
     <div class="input-group"><div class="label">URL</div>
-      <input type="text" id="el-url" value="${esc(l.url)}" autocapitalize="none" autocorrect="off" /></div>
-    <div class="input-group"><div class="label">Creator Instagram</div>
-      <div class="input-prefix"><span>@</span>
-      <input type="text" id="el-creator" value="${esc((l.creator||'').replace(/^@/,''))}" autocapitalize="none" /></div></div>
-    <div class="input-group"><div class="label">Tipologia</div>
-      <select id="el-tipo"><option value="">— Nessuna —</option>${tOpts}</select></div>
+      <input type="text" id="el-url" value="${esc(l.url)}" autocapitalize="none" /></div>
+    <div class="input-group"><div class="label">Creator</div>
+      <select id="el-creator">${cOpts}</select></div>
     <div class="input-group"><div class="label">Cartella</div>
-      <select id="el-folder">${fOpts}</select></div>
+      <select id="el-cartella"><option value="">— Nessuna —</option>${kOpts}</select></div>
     <button class="btn-primary" onclick="saveLink('${l.id}')">Salva modifiche</button>`;
   openModal();
 }
@@ -486,108 +447,105 @@ function editLink(l){
 async function saveLink(id){
   const title=document.getElementById('el-title').value.trim();
   const url=document.getElementById('el-url').value.trim();
-  const cr=document.getElementById('el-creator').value.trim();
-  const creator=cr?'@'+cr.replace(/^@/,''):null;
-  const tipologia=document.getElementById('el-tipo').value||null;
-  const folder_id=document.getElementById('el-folder').value;
-  if(!title||!url||!folder_id) return toast('Compila tutti i campi');
+  const creator_id=document.getElementById('el-creator').value;
+  const cartella_id=document.getElementById('el-cartella').value||null;
+  if(!title||!url||!creator_id) return toast('Compila tutti i campi');
   try {
-    await api('PATCH','links?id=eq.'+id,{title,url,creator,tipologia,folder_id});
+    await api('PATCH','links?id=eq.'+id,{title,url,creator_id,cartella_id});
     const i=links.findIndex(l=>l.id===id);
-    if(i>-1) links[i]={...links[i],title,url,creator,tipologia,folder_id};
+    if(i>-1) links[i]={...links[i],title,url,creator_id,cartella_id};
     toast('Salvato ✓'); closeModal(); updateStatus();
     const q=document.getElementById('search-input').value.trim();
     if(q) renderSearch(q); else renderBrowse();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
-/* ── CRUD Folder ── */
-async function addFolder(){
-  const name=document.getElementById('nf-name').value.trim();
-  if(!name) return toast('Inserisci un nome');
+/* ── CRUD Creator ── */
+async function addCreator(){
+  const raw=document.getElementById('nc-name').value.trim().replace(/^@/,'');
+  if(!raw) return toast('Inserisci un handle');
   try {
-    const res=await api('POST','folders',{name});
-    folders.push(res[0]);
-    document.getElementById('nf-name').value='';
-    toast('Cartella creata ✓'); updateStatus(); renderViewFolder(); renderBrowse(); renderViewLink();
+    const res=await api('POST','creators',{name:raw});
+    creators.push(res[0]);
+    document.getElementById('nc-name').value='';
+    toast('Creator aggiunto ✓'); updateStatus(); renderViewCreator(); renderBrowse(); renderViewLink();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
-function editFolder(f){
-  document.getElementById('modal-title').textContent='Modifica cartella';
+function editCreator(c){
+  document.getElementById('modal-title').textContent='Modifica creator';
   document.getElementById('modal-body').innerHTML=`
-    <div class="input-group"><div class="label">Nome</div>
-      <input type="text" id="ef-name" value="${esc(f.name)}" /></div>
-    <button class="btn-primary" onclick="saveFolder('${f.id}')">Salva modifiche</button>`;
+    <div class="input-group"><div class="label">Handle Instagram</div>
+      <div class="input-prefix"><span>@</span>
+      <input type="text" id="ec-name" value="${esc(c.name.replace(/^@/,''))}" autocapitalize="none" /></div></div>
+    <button class="btn-primary" onclick="saveCreator('${c.id}')">Salva modifiche</button>`;
   openModal();
 }
 
-async function saveFolder(id){
-  const name=document.getElementById('ef-name').value.trim();
-  if(!name) return toast('Inserisci un nome');
+async function saveCreator(id){
+  const name=document.getElementById('ec-name').value.trim().replace(/^@/,'');
+  if(!name) return toast('Inserisci un handle');
   try {
-    await api('PATCH','folders?id=eq.'+id,{name});
-    const i=folders.findIndex(f=>f.id===id);
-    if(i>-1) folders[i].name=name;
+    await api('PATCH','creators?id=eq.'+id,{name});
+    const i=creators.findIndex(c=>c.id===id);
+    if(i>-1) creators[i].name=name;
     toast('Salvato ✓'); closeModal(); renderAll();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
-async function deleteFolder(id){
-  const count=links.filter(l=>l.folder_id===id).length;
-  if(!confirm(count>0?`Questa cartella contiene ${count} link. Eliminarla? I link rimarranno senza cartella.`:'Eliminare questa cartella?')) return;
+async function deleteCreator(id){
+  const count=links.filter(l=>l.creator_id===id).length;
+  if(!confirm(count>0?`Questo creator ha ${count} link. Eliminare? I link rimarranno senza creator.`:'Eliminare questo creator?')) return;
   try {
-    await api('DELETE','folders?id=eq.'+id);
-    folders=folders.filter(f=>f.id!==id);
-    if(currentFolder && currentFolder.id===id) currentFolder=null;
-    toast('Eliminata'); updateStatus(); renderAll();
+    await api('DELETE','creators?id=eq.'+id);
+    creators=creators.filter(c=>c.id!==id);
+    if(currentCreator&&currentCreator.id===id) currentCreator=null;
+    toast('Eliminato'); updateStatus(); renderAll();
   } catch(e){ toast('Errore'); }
 }
 
-/* ── CRUD Tipologia ── */
-async function addTipologia(){
-  const name=document.getElementById('nt-name').value.trim();
+/* ── CRUD Cartella ── */
+async function addCartella(){
+  const name=document.getElementById('nk-name').value.trim();
   if(!name) return toast('Inserisci un nome');
   try {
-    const res=await api('POST','tipologie',{name});
-    tipologie.push(res[0]);
-    document.getElementById('nt-name').value='';
-    toast('Tipologia creata ✓'); renderViewTipo(); renderViewLink();
+    const res=await api('POST','cartelle',{name});
+    cartelle.push(res[0]);
+    document.getElementById('nk-name').value='';
+    toast('Cartella creata ✓'); renderViewCartella(); renderViewLink();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
-function editTipo(t){
-  document.getElementById('modal-title').textContent='Modifica tipologia';
+function editCartella(c){
+  document.getElementById('modal-title').textContent='Modifica cartella';
   document.getElementById('modal-body').innerHTML=`
     <div class="input-group"><div class="label">Nome</div>
-      <input type="text" id="et-name" value="${esc(t.name)}" /></div>
-    <button class="btn-primary" onclick="saveTipo('${t.id}','${esc(t.name)}')">Salva modifiche</button>`;
+      <input type="text" id="ek-name" value="${esc(c.name)}" /></div>
+    <button class="btn-primary" onclick="saveCartella('${c.id}')">Salva modifiche</button>`;
   openModal();
 }
 
-async function saveTipo(id, oldName){
-  const name=document.getElementById('et-name').value.trim();
+async function saveCartella(id){
+  const name=document.getElementById('ek-name').value.trim();
   if(!name) return toast('Inserisci un nome');
   try {
-    await api('PATCH','tipologie?id=eq.'+id,{name});
-    const i=tipologie.findIndex(t=>t.id===id);
-    if(i>-1) tipologie[i].name=name;
-    // update links that had old name
-    links.forEach(l=>{ if(l.tipologia===oldName) l.tipologia=name; });
-    toast('Salvato ✓'); closeModal(); renderViewTipo(); renderViewLink();
+    await api('PATCH','cartelle?id=eq.'+id,{name});
+    const i=cartelle.findIndex(c=>c.id===id);
+    if(i>-1) cartelle[i].name=name;
+    toast('Salvato ✓'); closeModal(); renderViewCartella(); renderViewLink();
     const q=document.getElementById('search-input').value.trim();
     if(q) renderSearch(q); else renderBrowse();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
-async function deleteTipo(id, name){
-  const count=links.filter(l=>l.tipologia===name).length;
-  if(!confirm(count>0?`Tipologia usata da ${count} link. Eliminare? I link perderanno la tipologia.`:'Eliminare questa tipologia?')) return;
+async function deleteCartella(id){
+  const count=links.filter(l=>l.cartella_id===id).length;
+  if(!confirm(count>0?`Questa cartella contiene ${count} link. Eliminare?`:'Eliminare questa cartella?')) return;
   try {
-    await api('DELETE','tipologie?id=eq.'+id);
-    tipologie=tipologie.filter(t=>t.id!==id);
-    links.forEach(l=>{ if(l.tipologia===name) l.tipologia=null; });
-    toast('Eliminata'); renderViewTipo(); renderViewLink();
+    await api('DELETE','cartelle?id=eq.'+id);
+    cartelle=cartelle.filter(c=>c.id!==id);
+    links.forEach(l=>{ if(l.cartella_id===id) l.cartella_id=null; });
+    toast('Eliminata'); renderViewCartella(); renderViewLink();
     const q=document.getElementById('search-input').value.trim();
     if(q) renderSearch(q); else renderBrowse();
   } catch(e){ toast('Errore'); }
@@ -596,10 +554,10 @@ async function deleteTipo(id, name){
 /* ── Search ── */
 function onSearch(){
   const q=document.getElementById('search-input').value.trim();
-  document.getElementById('search-clear').style.display=q?'block':'none';
+  document.getElementById('search-clear').style.display=q?'inline':'none';
   if(q){
     document.getElementById('main-tabs').style.opacity='0.4';
-    ['link','folder','tipo'].forEach(t=>document.getElementById('view-'+t).style.display='none');
+    ['link','creator','cartella'].forEach(t=>document.getElementById('view-'+t).style.display='none');
     document.getElementById('view-browse').style.display='';
     renderSearch(q);
   } else {
@@ -617,16 +575,16 @@ function clearSearch(){
 function renderSearch(q){
   const ql=q.toLowerCase();
   const results=links.filter(l=>{
-    const f=folders.find(x=>x.id===l.folder_id);
+    const cr=creators.find(c=>c.id===l.creator_id);
+    const ca=cartelle.find(c=>c.id===l.cartella_id);
     return (l.title||'').toLowerCase().includes(ql)||
       (l.url||'').toLowerCase().includes(ql)||
-      (l.creator||'').toLowerCase().includes(ql)||
-      (l.tipologia||'').toLowerCase().includes(ql)||
-      (f&&f.name.toLowerCase().includes(ql));
+      (cr&&cr.name.toLowerCase().includes(ql))||
+      (ca&&ca.name.toLowerCase().includes(ql));
   });
   const el=document.getElementById('view-browse');
   el.className='section fade-in';
-  if(!results.length){ el.innerHTML=`<div class="empty">🔍Nessun risultato per "${esc(q)}"</div>`; return; }
+  if(!results.length){ el.innerHTML=`<div class="empty"><span class="empty-icon">🔍</span>Nessun risultato per "${esc(q)}"</div>`; return; }
   let html=`<div class="search-results-header">${results.length} risultat${results.length===1?'o':'i'}</div>`;
   results.forEach(l=>{ html+=linkCardHtml(l,q); });
   el.innerHTML=html;
@@ -641,30 +599,6 @@ function closeModal(){
   document.getElementById('modal-overlay').classList.remove('open');
   document.getElementById('modal').classList.remove('open');
 }
-
-/* ── Sheet ── */
-function openSheet(url,title){
-  sheetUrl=url;
-  document.getElementById('sheet-title').textContent=title;
-  const iframe=document.getElementById('sheet-iframe');
-  const blocked=document.getElementById('sheet-blocked');
-  iframe.style.display='block'; blocked.style.display='none';
-  iframe.src=url;
-  iframe.onload=()=>{
-    try{ const loc=iframe.contentWindow.location.href; if(!loc||loc==='about:blank') showBlocked(); }
-    catch(e){}
-  };
-  document.getElementById('sheet-overlay').classList.add('open');
-  document.getElementById('sheet').classList.add('open');
-}
-function showBlocked(){ document.getElementById('sheet-iframe').style.display='none'; document.getElementById('sheet-blocked').style.display='flex'; }
-function closeSheet(){
-  document.getElementById('sheet-overlay').classList.remove('open');
-  document.getElementById('sheet').classList.remove('open');
-  setTimeout(()=>{ document.getElementById('sheet-iframe').src=''; },400);
-}
-function copySheetLink(){ navigator.clipboard.writeText(sheetUrl).then(()=>toast('Link copiato ✓')).catch(()=>toast('Copia non supportata')); }
-function openSheetExternal(){ window.open(sheetUrl,'_blank'); }
 
 loadAll();
 </script>
