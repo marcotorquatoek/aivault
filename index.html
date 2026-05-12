@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: 4.5 -->
+<!-- version: 4.6 -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -163,7 +163,7 @@
   <div class="header">
     <div class="header-top">
       <h1><svg width="22" height="22" viewBox="0 0 64 64" style="vertical-align:-4px;margin-right:7px" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#1a1a1a"/><path d="M20 18 L20 46 L26 40 L32 46 L38 40 L44 46 L44 18 Z" fill="none" stroke="white" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44" cy="44" r="10" fill="#5b8dd9"/><path d="M40 44 L43 47 L48 41" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>AI Links Vault</h1>
-      <span class="version-badge">v4.5</span>
+      <span class="version-badge">v4.6</span>
     </div>
     <div class="status" id="status-text">Connessione…</div>
   </div>
@@ -721,22 +721,33 @@ function openModal(){ document.getElementById('modal-overlay').classList.add('op
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); document.getElementById('modal').classList.remove('open'); }
 
 function openLink(url){
-  // Save current position
-  sessionStorage.setItem('vault_main', currentMain);
-  sessionStorage.setItem('vault_section', currentSection ? JSON.stringify(currentSection) : '');
+  localStorage.setItem('vault_main', currentMain);
+  localStorage.setItem('vault_section', currentSection ? JSON.stringify(currentSection) : '');
+  localStorage.setItem('vault_ts', Date.now());
   window.open(url, '_blank');
 }
 
 function restoreState(){
-  const main = sessionStorage.getItem('vault_main');
-  const sec  = sessionStorage.getItem('vault_section');
+  const ts = parseInt(localStorage.getItem('vault_ts')||'0');
+  // Only restore if navigated away less than 30 minutes ago
+  if(Date.now() - ts > 30*60*1000) return;
+  const main = localStorage.getItem('vault_main');
+  const sec  = localStorage.getItem('vault_section');
+  if(sec){
+    try {
+      const parsed = JSON.parse(sec);
+      // Re-fetch fresh object from loaded data
+      if(parsed.id === '__none__'){
+        currentSection = parsed;
+      } else {
+        currentSection = cartelle.find(c=>c.id===parsed.id) || null;
+      }
+    } catch(e){ currentSection=null; }
+  }
   if(main && main !== 'browse'){
     showMain(main);
-  } else if(sec){
-    try {
-      currentSection = JSON.parse(sec);
-      showMain('browse');
-    } catch(e){}
+  } else {
+    showMain('browse');
   }
 }
 
