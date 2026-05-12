@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: 2.2 -->
+<!-- version: 2.3 -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -7,7 +7,7 @@
   <title>AI Links Vault</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css" />
+
   <style>
     :root {
       --bg: #f8f7f4;
@@ -67,7 +67,7 @@
     .folder-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-hint); background: var(--bg); border: 0.5px solid var(--border); padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
     .folder-arrow { font-size: 16px; color: var(--text-hint); flex-shrink: 0; }
     .row-actions { display: flex; gap: 6px; flex-shrink: 0; }
-    .icon-btn { width: 32px; height: 32px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; color: var(--text-muted); }
+    .icon-btn { height: 32px; padding: 0 10px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: var(--text-muted); font-family: 'DM Sans', sans-serif; gap: 4px; white-space: nowrap; }
     .icon-btn:active { background: #eee; }
     .icon-btn.danger { border-color: rgba(192,57,43,0.2); background: var(--danger-bg); color: var(--danger); }
     .icon-btn.danger:active { background: #f9e0de; }
@@ -167,16 +167,16 @@
   <div class="header">
     <div class="header-top">
       <h1>AI Links Vault</h1>
-      <span class="version-badge">v2.2</span>
+      <span class="version-badge">v2.3</span>
     </div>
     <div class="status" id="status-text">Connessione…</div>
   </div>
 
   <div class="search-wrap">
     <div class="search-inner">
-      <i class="ti ti-search"></i>
+      🔍
       <input type="text" id="search-input" placeholder="Cerca titolo, creator, categoria…" oninput="onSearch()" />
-      <i class="ti ti-x" id="search-clear" onclick="clearSearch()"></i>
+      <span id="search-clear" onclick="clearSearch()" style="cursor:pointer;font-size:16px;color:var(--text-hint)">✕</span>
     </div>
   </div>
 
@@ -201,16 +201,16 @@
   <div class="sheet-handle"></div>
   <div class="sheet-header">
     <div class="sheet-title" id="sheet-title"></div>
-    <button class="sheet-close" onclick="closeSheet()"><i class="ti ti-x"></i></button>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
   </div>
   <div class="sheet-actions">
-    <button class="sheet-btn" onclick="copySheetLink()"><i class="ti ti-copy"></i> Copia link</button>
-    <button class="sheet-btn" onclick="openSheetExternal()"><i class="ti ti-external-link"></i> Apri browser</button>
+    <button class="sheet-btn" onclick="copySheetLink()">📋 Copia link</button>
+    <button class="sheet-btn" onclick="openSheetExternal()">↗ Apri browser</button>
   </div>
   <div class="sheet-iframe-wrap">
     <iframe class="sheet-iframe" id="sheet-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
     <div class="sheet-blocked" id="sheet-blocked">
-      <i class="ti ti-shield-off"></i>
+      🚫
       <p>Questo sito non permette l'anteprima in-app.<br>Usa <strong>Apri browser</strong> per visitarlo.</p>
     </div>
   </div>
@@ -222,7 +222,7 @@
     <div class="modal-handle"></div>
     <div class="modal-header">
       <h3 id="modal-title">Modifica</h3>
-      <button class="sheet-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+      <button class="sheet-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
@@ -288,9 +288,9 @@ function hlText(text,q){
   return esc(text).replace(re,'<mark class="hl">$1</mark>');
 }
 function avatarHtml(creator){
-  if(!creator) return `<div class="creator-avatar-placeholder"><i class="ti ti-user"></i></div>`;
+  if(!creator) return `<div class="creator-avatar-placeholder">👤</div>`;
   const h=creator.replace(/^@/,'');
-  return `<img class="creator-avatar" src="https://unavatar.io/instagram/${esc(h)}" alt="${esc(creator)}" onerror="this.outerHTML='<div class=\\'creator-avatar-placeholder\\'><i class=\\'ti ti-user\\'></i></div>'" />`;
+  return `<img class="creator-avatar" src="https://unavatar.io/instagram/${esc(h)}" alt="${esc(creator)}" onerror="this.outerHTML='<div class=\\'creator-avatar-placeholder\\'>👤</div>'" />`;
 }
 
 /* ── Browse ── */
@@ -299,26 +299,26 @@ function renderBrowse(){
   el.className='section fade-in';
   if(currentFolder){
     const fl=links.filter(l=>l.folder_id===currentFolder.id);
-    let html=`<button class="back-btn" onclick="currentFolder=null;renderBrowse()"><i class="ti ti-arrow-left"></i> Cartelle</button>
-    <div class="folder-heading"><i class="ti ti-folder"></i>${esc(currentFolder.name)}</div>`;
-    if(!fl.length) html+=`<div class="empty"><i class="ti ti-bookmark-off"></i>Nessun link qui</div>`;
+    let html=`<button class="back-btn" onclick="currentFolder=null;renderBrowse()">← Cartelle</button>
+    <div class="folder-heading">📁 ${esc(currentFolder.name)}</div>`;
+    if(!fl.length) html+=`<div class="empty">🔖Nessun link qui</div>`;
     else fl.forEach(l=>{ html+=linkCardHtml(l,''); });
     el.innerHTML=html;
   } else {
-    if(!folders.length){ el.innerHTML=`<div class="empty"><i class="ti ti-folder-off"></i>Nessuna cartella<br><small style="margin-top:8px;display:block">Usa "+ Cartella" per crearne una</small></div>`; return; }
+    if(!folders.length){ el.innerHTML=`<div class="empty">📂Nessuna cartella<br><small style="margin-top:8px;display:block">Usa "+ Cartella" per crearne una</small></div>`; return; }
     let html='<div class="folder-list">';
     folders.forEach(f=>{
       const count=links.filter(l=>l.folder_id===f.id).length;
       html+=`<div class="folder-row">
         <div class="folder-row-main" onclick='openFolder(${JSON.stringify(f)})'>
-          <i class="ti ti-folder folder-icon"></i>
+          📁
           <span class="folder-name">${esc(f.name)}</span>
           <span class="folder-count">${count}</span>
-          <i class="ti ti-chevron-right folder-arrow"></i>
+          ›
         </div>
         <div class="row-actions">
-          <button class="icon-btn" onclick='editFolder(${JSON.stringify(f)})'><i class="ti ti-pencil"></i></button>
-          <button class="icon-btn danger" onclick="deleteFolder('${f.id}')"><i class="ti ti-trash"></i></button>
+          <button class="icon-btn" onclick='editFolder(${JSON.stringify(f)})'>✏️ Modifica</button>
+          <button class="icon-btn danger" onclick="deleteFolder('${f.id}')">🗑 Elimina</button>
         </div>
       </div>`;
     });
@@ -332,7 +332,7 @@ function linkCardHtml(l,q){
   const tags=[
     l.creator?`<span class="meta-creator">${hlText(l.creator,q)}</span>`:'',
     l.tipologia?`<span class="meta-tag">${hlText(l.tipologia,q)}</span>`:'',
-    folder?`<span class="meta-tag"><i class="ti ti-folder" style="font-size:11px;vertical-align:-1px;margin-right:2px"></i>${hlText(folder.name,q)}</span>`:''
+    folder?`<span class="meta-tag">📁${hlText(folder.name,q)}</span>`:''
   ].filter(Boolean).join('');
   const uE=esc(l.url), tE=esc(l.title);
   return `<div class="link-card">
@@ -344,9 +344,9 @@ function linkCardHtml(l,q){
       </div>
     </div>
     <div class="link-actions">
-      <button class="btn-open" onclick="openSheet('${uE}','${tE}')"><i class="ti ti-layout-bottombar"></i> Apri</button>
-      <button class="btn-edit" onclick='editLink(${JSON.stringify(l)})'><i class="ti ti-pencil"></i></button>
-      <button class="btn-del" onclick="deleteLink('${l.id}')"><i class="ti ti-trash"></i></button>
+      <button class="btn-open" onclick="openSheet('${uE}','${tE}')">▶ Apri</button>
+      <button class="btn-edit" onclick='editLink(${JSON.stringify(l)})'>✏️</button>
+      <button class="btn-del" onclick="deleteLink('${l.id}')">🗑</button>
     </div>
   </div>`;
 }
@@ -384,13 +384,13 @@ function renderViewFolder(){
       const count=links.filter(l=>l.folder_id===f.id).length;
       list+=`<div class="folder-row" style="margin-bottom:8px">
         <div class="folder-row-main" style="cursor:default">
-          <i class="ti ti-folder folder-icon"></i>
+          📁
           <span class="folder-name">${esc(f.name)}</span>
           <span class="folder-count">${count}</span>
         </div>
         <div class="row-actions">
-          <button class="icon-btn" onclick='editFolder(${JSON.stringify(f)})'><i class="ti ti-pencil"></i></button>
-          <button class="icon-btn danger" onclick="deleteFolder('${f.id}')"><i class="ti ti-trash"></i></button>
+          <button class="icon-btn" onclick='editFolder(${JSON.stringify(f)})'>✏️ Modifica</button>
+          <button class="icon-btn danger" onclick="deleteFolder('${f.id}')">🗑 Elimina</button>
         </div>
       </div>`;
     });
@@ -416,8 +416,8 @@ function renderViewTipo(){
         <span class="tipo-pill">${esc(t.name)}</span>
         <span class="tipo-count">${count} link</span>
         <div class="row-actions">
-          <button class="icon-btn" onclick='editTipo(${JSON.stringify(t)})'><i class="ti ti-pencil"></i></button>
-          <button class="icon-btn danger" onclick="deleteTipo('${t.id}','${esc(t.name)}')"><i class="ti ti-trash"></i></button>
+          <button class="icon-btn" onclick='editTipo(${JSON.stringify(t)})'>✏️ Modifica</button>
+          <button class="icon-btn danger" onclick="deleteTipo('${t.id}','${esc(t.name)}')">🗑 Elimina</button>
         </div>
       </div>`;
     });
@@ -626,7 +626,7 @@ function renderSearch(q){
   });
   const el=document.getElementById('view-browse');
   el.className='section fade-in';
-  if(!results.length){ el.innerHTML=`<div class="empty"><i class="ti ti-search-off"></i>Nessun risultato per "${esc(q)}"</div>`; return; }
+  if(!results.length){ el.innerHTML=`<div class="empty">🔍Nessun risultato per "${esc(q)}"</div>`; return; }
   let html=`<div class="search-results-header">${results.length} risultat${results.length===1?'o':'i'}</div>`;
   results.forEach(l=>{ html+=linkCardHtml(l,q); });
   el.innerHTML=html;
