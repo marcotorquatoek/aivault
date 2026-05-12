@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: 4.4 -->
+<!-- version: 4.5 -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -163,7 +163,7 @@
   <div class="header">
     <div class="header-top">
       <h1><svg width="22" height="22" viewBox="0 0 64 64" style="vertical-align:-4px;margin-right:7px" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#1a1a1a"/><path d="M20 18 L20 46 L26 40 L32 46 L38 40 L44 46 L44 18 Z" fill="none" stroke="white" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44" cy="44" r="10" fill="#5b8dd9"/><path d="M40 44 L43 47 L48 41" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>AI Links Vault</h1>
-      <span class="version-badge">v4.4</span>
+      <span class="version-badge">v4.5</span>
     </div>
     <div class="status" id="status-text">Connessione…</div>
   </div>
@@ -232,8 +232,7 @@ async function api(method, path, body){
 }
 
 async function loadAll(){
-  try {
-    // Run migrations silently
+  try {    // Run migrations silently
     await Promise.allSettled([
       api('PATCH','cartelle?id=neq.00000000-0000-0000-0000-000000000000',{}), // no-op
       fetch(SB+'/rest/v1/rpc/exec',{method:'POST',headers:H}), // no-op
@@ -368,7 +367,7 @@ function linkCardHtml(l,q){
       </div>
     </div>
     <div class="link-actions">
-      <button class="btn-open" onclick="window.open('${uE}','_blank')">↗ Apri</button>
+      <button class="btn-open" onclick="openLink('${uE}')">↗ Apri</button>
       <button class="btn-edit" onclick='editLink(${JSON.stringify(l)})'>✏️</button>
       <button class="btn-del" onclick="deleteLink('${l.id}')">🗑</button>
     </div>
@@ -721,7 +720,27 @@ function renderSearch(q){
 function openModal(){ document.getElementById('modal-overlay').classList.add('open'); document.getElementById('modal').classList.add('open'); }
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); document.getElementById('modal').classList.remove('open'); }
 
-loadAll();
+function openLink(url){
+  // Save current position
+  sessionStorage.setItem('vault_main', currentMain);
+  sessionStorage.setItem('vault_section', currentSection ? JSON.stringify(currentSection) : '');
+  window.open(url, '_blank');
+}
+
+function restoreState(){
+  const main = sessionStorage.getItem('vault_main');
+  const sec  = sessionStorage.getItem('vault_section');
+  if(main && main !== 'browse'){
+    showMain(main);
+  } else if(sec){
+    try {
+      currentSection = JSON.parse(sec);
+      showMain('browse');
+    } catch(e){}
+  }
+}
+
+loadAll().then(restoreState);
 </script>
 </body>
 </html>
