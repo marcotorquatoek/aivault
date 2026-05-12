@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: 3.0 -->
+<!-- version: 4.2 -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -35,7 +35,6 @@
 
     .search-wrap { padding: 10px 16px; background: var(--surface); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
     .search-inner { display: flex; align-items: center; gap: 8px; background: var(--bg); border: 0.5px solid var(--border-strong); border-radius: 20px; padding: 8px 14px; }
-    .search-icon { font-size: 14px; color: var(--text-hint); flex-shrink: 0; }
     .search-inner input { flex: 1; border: none; background: transparent; font-size: 14px; color: var(--text); font-family: 'DM Sans', sans-serif; outline: none; }
     .search-inner input::placeholder { color: var(--text-hint); }
     #search-clear { font-size: 14px; color: var(--text-hint); cursor: pointer; display: none; }
@@ -48,21 +47,31 @@
     .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .section { padding: 16px; }
 
-    /* Creator list */
-    .creator-list { display: flex; flex-direction: column; gap: 8px; }
-    .creator-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); }
-    .creator-row-main { display: flex; align-items: center; gap: 10px; flex: 1; cursor: pointer; min-width: 0; }
-    .creator-bubble { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: white; flex-shrink: 0; }
-    .creator-handle { flex: 1; font-size: 15px; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .creator-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-hint); background: var(--bg); border: 0.5px solid var(--border); padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
+    /* Cartella rows */
+    .cartella-list { display: flex; flex-direction: column; gap: 8px; }
+    .cartella-browse-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); cursor: default; transition: background 0.15s; }
+    .cartella-browse-row.dragging { opacity: 0.4; }
+    .cartella-browse-row.drag-over { border-color: var(--text); }
+    .drag-handle { font-size: 16px; color: var(--text-hint); cursor: grab; padding: 0 4px; flex-shrink: 0; user-select: none; }
+    .color-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+    .cartella-browse-main { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; min-width: 0; }
+    .cartella-browse-name { flex: 1; font-size: 15px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cartella-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-hint); background: var(--bg); border: 0.5px solid var(--border); padding: 2px 8px; border-radius: 10px; flex-shrink: 0; }
     .chevron { font-size: 14px; color: var(--text-hint); flex-shrink: 0; }
+
+    /* Creator rows in manage view */
+    .creator-manage-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 8px; }
+    .creator-bubble { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; color: white; flex-shrink: 0; }
+    .creator-info { flex: 1; min-width: 0; }
+    .creator-handle { font-size: 15px; color: var(--text); }
+    .creator-ig-link { font-size: 11px; color: var(--text-hint); text-decoration: none; }
+    .creator-ig-link:hover { text-decoration: underline; }
 
     /* Row actions */
     .row-actions { display: flex; gap: 6px; flex-shrink: 0; }
     .icon-btn { height: 30px; padding: 0 10px; border-radius: 8px; border: 0.5px solid var(--border); background: var(--bg); cursor: pointer; display: flex; align-items: center; font-size: 12px; font-weight: 500; color: var(--text-muted); font-family: 'DM Sans', sans-serif; gap: 4px; white-space: nowrap; }
     .icon-btn:active { background: #eee; }
     .icon-btn.danger { border-color: rgba(192,57,43,0.2); background: var(--danger-bg); color: var(--danger); }
-    .icon-btn.danger:active { background: #f9e0de; }
 
     /* Link cards */
     .link-card { padding: 14px 16px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 8px; }
@@ -77,21 +86,7 @@
     .btn-open { flex: 1; padding: 9px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text); font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-open:active { background: #eee; }
     .btn-edit { padding: 9px 12px; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; }
-    .btn-edit:active { background: #eee; }
     .btn-del { padding: 9px 12px; background: var(--danger-bg); border: 0.5px solid rgba(192,57,43,0.2); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--danger); font-family: 'DM Sans', sans-serif; }
-    .btn-del:active { background: #f9e0de; }
-
-    /* Search */
-    .search-results-header { font-size: 12px; color: var(--text-hint); margin-bottom: 12px; font-family: 'DM Mono', monospace; }
-    mark.hl { background: #fff3cd; border-radius: 2px; padding: 0 1px; font-style: normal; }
-
-    .back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer; margin-bottom: 16px; background: none; border: none; font-family: 'DM Sans', sans-serif; padding: 0; }
-    .section-heading { font-size: 17px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-
-    /* Cartelle list */
-    .cartella-row { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 8px; }
-    .cartella-name { flex: 1; font-size: 15px; color: var(--text); }
-    .cartella-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-hint); flex-shrink: 0; }
 
     /* Form */
     .form-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 8px; }
@@ -100,16 +95,36 @@
     .label { font-size: 12px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
     input[type=text], select { width: 100%; padding: 11px 14px; font-size: 15px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); font-family: 'DM Sans', sans-serif; -webkit-appearance: none; appearance: none; }
     input[type=text]:focus, select:focus { outline: none; border-color: var(--text); }
+    input[type=color] { width: 44px; height: 44px; border-radius: 50%; border: 0.5px solid var(--border-strong); padding: 2px; cursor: pointer; background: none; }
+    .color-row { display: flex; align-items: center; gap: 12px; }
+    .color-row input[type=text] { flex: 1; }
     .btn-primary { width: 100%; padding: 13px; background: var(--text); color: var(--accent-fg); border: none; border-radius: var(--radius); font-size: 15px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
     .btn-primary:active { opacity: 0.8; }
-    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+    .btn-primary:disabled { opacity: 0.4; }
     .input-prefix { position: relative; }
     .input-prefix span { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--text-muted); pointer-events: none; }
     .input-prefix input { padding-left: 26px; }
     .section-label { font-size: 11px; font-weight: 500; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; margin-top: 18px; }
 
+    /* Select + add creator inline */
+    .select-plus-row { display: flex; gap: 8px; align-items: stretch; }
+    .select-plus-row select { flex: 1; }
+    .btn-plus { padding: 0 14px; background: var(--bg); border: 0.5px solid var(--border-strong); border-radius: var(--radius); font-size: 20px; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; display: flex; align-items: center; }
+    .btn-plus:active { background: #eee; }
+    .inline-add-box { background: var(--bg); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 12px; margin-top: 8px; display: none; }
+    .inline-add-box.open { display: block; }
+    .inline-add-row { display: flex; gap: 8px; align-items: center; }
+    .inline-add-row input { flex: 1; padding: 9px 12px; font-size: 14px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); font-family: 'DM Sans', sans-serif; outline: none; color: var(--text); }
+    .btn-inline-save { padding: 9px 14px; background: var(--text); color: white; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; }
+
+    .back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer; margin-bottom: 16px; background: none; border: none; font-family: 'DM Sans', sans-serif; padding: 0; }
+    .section-heading { font-size: 17px; font-weight: 500; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+
     .empty { text-align: center; padding: 48px 20px; color: var(--text-hint); font-size: 14px; line-height: 1.6; }
     .empty-icon { font-size: 32px; display: block; margin-bottom: 10px; }
+
+    .search-results-header { font-size: 12px; color: var(--text-hint); margin-bottom: 12px; font-family: 'DM Mono', monospace; }
+    mark.hl { background: #fff3cd; border-radius: 2px; padding: 0 1px; font-style: normal; }
 
     /* Modal */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0); transition: background 0.25s; z-index: 150; pointer-events: none; display: flex; align-items: flex-end; justify-content: center; }
@@ -135,14 +150,14 @@
   <div class="header">
     <div class="header-top">
       <h1>AI Links Vault</h1>
-      <span class="version-badge">v3.0</span>
+      <span class="version-badge">v4.2</span>
     </div>
     <div class="status" id="status-text">Connessione…</div>
   </div>
 
   <div class="search-wrap">
     <div class="search-inner">
-      <span class="search-icon">🔍</span>
+      <span style="color:var(--text-hint)">🔍</span>
       <input type="text" id="search-input" placeholder="Cerca titolo, creator, cartella…" oninput="onSearch()" />
       <span id="search-clear" onclick="clearSearch()">✕</span>
     </div>
@@ -163,7 +178,6 @@
   </div>
 </div>
 
-<!-- Edit modal -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
   <div class="modal" id="modal" onclick="event.stopPropagation()">
     <div class="modal-handle"></div>
@@ -182,63 +196,52 @@ const SB = 'https://kyqhkromuwjenkffvkqe.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5cWhrcm9tdXdqZW5rZmZ2a3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDQ1NzAsImV4cCI6MjA5NDA4MDU3MH0.QuDYyRVZy0MSxVzd3KVT8R6I1z8BFU3kh0vgr-7BiQw';
 const H = {'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY};
 
-let creators=[], links=[], cartelle=[], currentCreator=null, currentMain='browse';
+const PALETTE = ['#e07b54','#5b8dd9','#6abf8a','#b87fcf','#d4a843','#5bbfbf','#d96b8a','#7a9e6b','#c46b3a','#7b7fd4','#e05c8a','#4aa8a0'];
 
-const COLORS = ['#e07b54','#5b8dd9','#6abf8a','#b87fcf','#d4a843','#5bbfbf','#d96b8a','#7a9e6b','#c46b3a','#7b7fd4'];
-function colorFor(str) {
-  let h=0; for(let i=0;i<(str||'').length;i++) h=(h*31+str.charCodeAt(i))>>>0;
-  return COLORS[h % COLORS.length];
-}
-function initials(str) {
-  const s=(str||'?').replace(/^@/,'');
-  return s.slice(0,2).toUpperCase();
-}
-function bubble(str, size) {
-  const sz = size||36;
-  return `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${colorFor(str)};display:flex;align-items:center;justify-content:center;font-size:${Math.round(sz*0.36)}px;font-weight:500;color:white;flex-shrink:0">${initials(str)}</div>`;
+let creators=[], links=[], cartelle=[], currentSection=null, currentMain='browse';
+let dragSrc=null;
+
+function randColor(){ return PALETTE[Math.floor(Math.random()*PALETTE.length)]; }
+function initials(str){ const s=(str||'?').replace(/^@/,''); return s.slice(0,2).toUpperCase(); }
+function bubbleEl(name, color, size){
+  const sz=size||36;
+  return `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${color||randColor()};display:flex;align-items:center;justify-content:center;font-size:${Math.round(sz*0.36)}px;font-weight:500;color:white;flex-shrink:0">${initials(name)}</div>`;
 }
 
-/* ── API ── */
-async function api(method, path, body) {
-  const opts = {
-    method,
-    headers: {...H, 'Prefer': method==='POST' ? 'return=representation' : 'return=minimal'},
-    body: body ? JSON.stringify(body) : undefined
-  };
-  const r = await fetch(SB+'/rest/v1/'+path, opts);
-  if (!r.ok) {
-    const txt = await r.text();
-    throw new Error(txt || r.status);
-  }
-  if (method==='DELETE' || method==='PATCH') return null;
-  const text = await r.text();
-  return text ? JSON.parse(text) : null;
+async function api(method, path, body){
+  const r=await fetch(SB+'/rest/v1/'+path,{
+    method, headers:{...H,'Prefer':method==='POST'?'return=representation':'return=minimal'},
+    body:body?JSON.stringify(body):undefined
+  });
+  if(!r.ok){ const t=await r.text(); throw new Error(t||r.status); }
+  if(method==='DELETE'||method==='PATCH') return null;
+  const t=await r.text(); return t?JSON.parse(t):null;
 }
 
-async function loadAll() {
+async function loadAll(){
   try {
+    // Run migrations silently
+    await Promise.allSettled([
+      api('PATCH','cartelle?id=neq.00000000-0000-0000-0000-000000000000',{}), // no-op
+      fetch(SB+'/rest/v1/rpc/exec',{method:'POST',headers:H}), // no-op
+    ]);
     [creators, links, cartelle] = await Promise.all([
       api('GET','creators?select=*&order=created_at.asc'),
       api('GET','links?select=*&order=created_at.desc'),
-      api('GET','cartelle?select=*&order=created_at.asc')
+      api('GET','cartelle?select=*&order=sort_order.asc,created_at.asc')
     ]);
+    // Assign missing colors locally
+    creators.forEach(c=>{ if(!c.color) c.color=randColor(); });
+    cartelle.forEach(c=>{ if(!c.color) c.color=randColor(); });
     updateStatus();
-  } catch(e) {
-    document.getElementById('status-text').textContent = 'Errore: '+e.message;
-  }
+  } catch(e){ document.getElementById('status-text').textContent='Errore: '+e.message; }
   renderAll();
 }
 
-function updateStatus() {
-  document.getElementById('status-text').textContent = creators.length+' creator · '+links.length+' link';
-}
-function renderAll() { renderBrowse(); renderViewLink(); renderViewCreator(); renderViewCartella(); }
+function updateStatus(){ document.getElementById('status-text').textContent=cartelle.length+' cartelle · '+links.length+' link'; }
+function renderAll(){ renderBrowse(); renderViewLink(); renderViewCreator(); renderViewCartella(); }
 
-/* ── Utils ── */
-function toast(msg) {
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2000);
-}
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function hlText(text,q){
   if(!q||!text) return esc(text||'');
@@ -246,63 +249,106 @@ function hlText(text,q){
   return esc(text).replace(re,'<mark class="hl">$1</mark>');
 }
 
-/* ── Tabs ── */
-function showMain(tab) {
+function showMain(tab){
   clearSearch();
   ['browse','link','creator','cartella'].forEach(t=>{
-    document.getElementById('view-'+t).style.display = t===tab?'':'none';
-    document.getElementById('mtab-'+t).className = 'mtab'+(t===tab?' active':'');
+    document.getElementById('view-'+t).style.display=t===tab?'':'none';
+    document.getElementById('mtab-'+t).className='mtab'+(t===tab?' active':'');
   });
   currentMain=tab;
-  if(tab==='browse'){ currentCreator=null; renderBrowse(); }
+  if(tab==='browse'){ currentSection=null; renderBrowse(); }
 }
 
-/* ── Browse ── */
-function renderBrowse() {
+/* ── BROWSE (cartelle-first) ── */
+function renderBrowse(){
   const el=document.getElementById('view-browse');
   el.className='section fade-in';
-  if(currentCreator){
-    const fl=links.filter(l=>l.creator_id===currentCreator.id);
-    let html=`<button class="back-btn" onclick="currentCreator=null;renderBrowse()">← Creator</button>
-    <div class="section-heading">${bubble(currentCreator.name,32)}<span>@${esc(currentCreator.name.replace(/^@/,''))}</span></div>`;
-    if(!fl.length) html+=`<div class="empty"><span class="empty-icon">🔖</span>Nessun link per questo creator</div>`;
+  if(currentSection){
+    const sec=currentSection;
+    const fl = sec.id==='__none__' ? links.filter(l=>!l.cartella_id) : links.filter(l=>l.cartella_id===sec.id);
+    const dotColor = sec.color||'#aaa';
+    let html=`<button class="back-btn" onclick="currentSection=null;renderBrowse()">← Cartelle</button>
+    <div class="section-heading"><span style="width:14px;height:14px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0"></span>${esc(sec.name)}</div>`;
+    if(!fl.length) html+=`<div class="empty"><span class="empty-icon">🔖</span>Nessun link in questa cartella</div>`;
     else fl.forEach(l=>{ html+=linkCardHtml(l,''); });
     el.innerHTML=html;
-  } else {
-    if(!creators.length){ el.innerHTML=`<div class="empty"><span class="empty-icon">👤</span>Nessun creator ancora<br><small>Usa "+ Creator" per aggiungerne uno</small></div>`; return; }
-    let html='<div class="creator-list">';
-    creators.forEach(c=>{
-      const count=links.filter(l=>l.creator_id===c.id).length;
-      html+=`<div class="creator-row">
-        <div class="creator-row-main" onclick='openCreator(${JSON.stringify(c)})'>
-          ${bubble(c.name)}
-          <span class="creator-handle">@${esc(c.name.replace(/^@/,''))}</span>
-          <span class="creator-count">${count}</span>
-          <span class="chevron">›</span>
-        </div>
-        <div class="row-actions">
-          <button class="icon-btn" onclick='editCreator(${JSON.stringify(c)})'>✏️ Modifica</button>
-          <button class="icon-btn danger" onclick="deleteCreator('${c.id}')">🗑 Elimina</button>
-        </div>
-      </div>`;
-    });
-    el.innerHTML=html+'</div>';
+    return;
   }
+  if(!cartelle.length && !links.filter(l=>!l.cartella_id).length){
+    el.innerHTML=`<div class="empty"><span class="empty-icon">📁</span>Nessuna cartella ancora<br><small>Usa "+ Cartella" per crearne una</small></div>`;
+    return;
+  }
+  let html='<div class="cartella-list" id="cartella-list">';
+  cartelle.forEach((c,i)=>{
+    const count=links.filter(l=>l.cartella_id===c.id).length;
+    html+=`<div class="cartella-browse-row" draggable="true"
+      ondragstart="dragStart(event,'${c.id}')"
+      ondragover="dragOver(event)"
+      ondrop="dragDrop(event,'${c.id}')"
+      ondragend="dragEnd(event)"
+      data-id="${c.id}">
+      <span class="drag-handle" title="Trascina per riordinare">⠿</span>
+      <span class="color-dot" style="background:${c.color||'#aaa'}"></span>
+      <div class="cartella-browse-main" onclick='openSection(${JSON.stringify(c)})'>
+        <span class="cartella-browse-name">${esc(c.name)}</span>
+        <span class="cartella-count">${count}</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="row-actions">
+        <button class="icon-btn" onclick='editCartella(${JSON.stringify(c)})'>✏️</button>
+        <button class="icon-btn danger" onclick="deleteCartella('${c.id}')">🗑</button>
+      </div>
+    </div>`;
+  });
+  const uncategorized=links.filter(l=>!l.cartella_id);
+  if(uncategorized.length){
+    html+=`<div class="cartella-browse-row">
+      <span class="drag-handle" style="opacity:0">⠿</span>
+      <span class="color-dot" style="background:#ccc"></span>
+      <div class="cartella-browse-main" onclick="openSection({id:'__none__',name:'Senza cartella',color:'#ccc'})">
+        <span class="cartella-browse-name" style="color:var(--text-muted)">Senza cartella</span>
+        <span class="cartella-count">${uncategorized.length}</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>`;
+  }
+  el.innerHTML=html+'</div>';
 }
-function openCreator(c){ currentCreator=c; renderBrowse(); }
+function openSection(c){ currentSection=c; renderBrowse(); }
+
+/* ── Drag & Drop reorder ── */
+function dragStart(e,id){ dragSrc=id; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; }
+function dragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect='move'; e.currentTarget.classList.add('drag-over'); }
+function dragEnd(e){ e.currentTarget.classList.remove('dragging'); document.querySelectorAll('.drag-over').forEach(el=>el.classList.remove('drag-over')); }
+async function dragDrop(e,targetId){
+  e.preventDefault();
+  if(dragSrc===targetId) return;
+  const fromIdx=cartelle.findIndex(c=>c.id===dragSrc);
+  const toIdx=cartelle.findIndex(c=>c.id===targetId);
+  if(fromIdx===-1||toIdx===-1) return;
+  const moved=cartelle.splice(fromIdx,1)[0];
+  cartelle.splice(toIdx,0,moved);
+  // Save new order
+  try {
+    await Promise.all(cartelle.map((c,i)=>api('PATCH',`cartelle?id=eq.${c.id}`,{sort_order:i})));
+    cartelle.forEach((c,i)=>c.sort_order=i);
+  } catch(e){ /* silent */ }
+  renderBrowse();
+}
 
 function linkCardHtml(l,q){
   const creator=creators.find(c=>c.id===l.creator_id);
   const cartella=cartelle.find(c=>c.id===l.cartella_id);
-  const handle=creator?creator.name:'?';
+  const handle=creator?('@'+creator.name.replace(/^@/,'')):null;
+  const color=creator?creator.color:'#aaa';
   const tags=[
-    creator?`<span class="meta-handle">${hlText('@'+handle.replace(/^@/,''),q)}</span>`:'',
+    handle?`<span class="meta-handle">${hlText(handle,q)}</span>`:'',
     cartella?`<span class="meta-tag">📁 ${hlText(cartella.name,q)}</span>`:'',
   ].filter(Boolean).join('');
-  const uE=esc(l.url), tE=esc(l.title);
+  const uE=esc(l.url);
   return `<div class="link-card">
     <div class="link-card-top">
-      ${bubble(handle)}
+      ${bubbleEl(creator?creator.name:'?', color)}
       <div class="link-info">
         <div class="link-title">${hlText(l.title,q)}</div>
         <div class="link-meta">${tags}</div>
@@ -328,12 +374,49 @@ function renderViewLink(){
         <input type="text" id="nl-title" placeholder="es. Guida Midjourney V6" /></div>
       <div class="input-group"><div class="label">URL</div>
         <input type="text" id="nl-url" placeholder="https://…" autocapitalize="none" autocorrect="off" /></div>
-      <div class="input-group"><div class="label">Creator</div>
-        <select id="nl-creator">${creators.length?cOpts:'<option value="">— Aggiungi prima un creator —</option>'}</select></div>
+      <div class="input-group">
+        <div class="label">Creator</div>
+        <div class="select-plus-row">
+          <select id="nl-creator">${creators.length?cOpts:'<option value="">— Nessun creator —</option>'}</select>
+          <button class="btn-plus" onclick="toggleInlineAdd()" title="Aggiungi nuovo creator">＋</button>
+        </div>
+        <div class="inline-add-box" id="inline-add-box">
+          <div class="label" style="margin-bottom:8px">Nuovo creator</div>
+          <div class="inline-add-row">
+            <div style="position:relative;flex:1"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px">@</span><input type="text" id="inline-creator-name" placeholder="handle" autocapitalize="none" style="padding-left:24px" /></div>
+            <button class="btn-inline-save" onclick="inlineAddCreator()">Aggiungi</button>
+          </div>
+        </div>
+      </div>
       <div class="input-group"><div class="label">Cartella</div>
         <select id="nl-cartella"><option value="">— Nessuna —</option>${kOpts}</select></div>
       <button class="btn-primary" onclick="addLink()" id="add-link-btn">Salva link</button>
     </div>`;
+}
+
+function toggleInlineAdd(){
+  const box=document.getElementById('inline-add-box');
+  box.classList.toggle('open');
+  if(box.classList.contains('open')) document.getElementById('inline-creator-name').focus();
+}
+
+async function inlineAddCreator(){
+  const raw=document.getElementById('inline-creator-name').value.trim().replace(/^@/,'');
+  if(!raw) return toast('Inserisci un handle');
+  try {
+    const color=randColor();
+    const res=await api('POST','creators',{name:raw,color});
+    const c={...res[0],color};
+    creators.push(c);
+    toast('Creator aggiunto ✓');
+    document.getElementById('inline-creator-name').value='';
+    document.getElementById('inline-add-box').classList.remove('open');
+    // rebuild select and select new
+    const sel=document.getElementById('nl-creator');
+    const opt=document.createElement('option');
+    opt.value=c.id; opt.textContent='@'+raw; sel.appendChild(opt); sel.value=c.id;
+    renderViewCreator();
+  } catch(e){ toast('Errore: '+e.message); }
 }
 
 /* ── View: + Creator ── */
@@ -344,12 +427,14 @@ function renderViewCreator(){
     list='<div class="section-label">Creator esistenti</div>';
     creators.forEach(c=>{
       const count=links.filter(l=>l.creator_id===c.id).length;
-      list+=`<div class="creator-row" style="margin-bottom:8px">
-        <div class="creator-row-main" style="cursor:default">
-          ${bubble(c.name)}
-          <span class="creator-handle">@${esc(c.name.replace(/^@/,''))}</span>
-          <span class="creator-count">${count}</span>
+      const handle=c.name.replace(/^@/,'');
+      list+=`<div class="creator-manage-row">
+        ${bubbleEl(c.name, c.color)}
+        <div class="creator-info">
+          <div class="creator-handle">@${esc(handle)}</div>
+          <a class="creator-ig-link" href="https://www.instagram.com/${esc(handle)}/" target="_blank">↗ instagram.com/${esc(handle)}</a>
         </div>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-hint);margin-right:4px">${count}</span>
         <div class="row-actions">
           <button class="icon-btn" onclick='editCreator(${JSON.stringify(c)})'>✏️ Modifica</button>
           <button class="icon-btn danger" onclick="deleteCreator('${c.id}')">🗑 Elimina</button>
@@ -357,12 +442,20 @@ function renderViewCreator(){
       </div>`;
     });
   }
+  const newColor=randColor();
   el.innerHTML=`
     <div class="form-card">
       <div class="form-title">Nuovo creator</div>
       <div class="input-group"><div class="label">Handle Instagram</div>
         <div class="input-prefix"><span>@</span>
         <input type="text" id="nc-name" placeholder="lumonboy" autocapitalize="none" autocorrect="off" /></div></div>
+      <div class="input-group"><div class="label">Colore</div>
+        <div class="color-row">
+          <input type="color" id="nc-color" value="${newColor}" oninput="document.getElementById('nc-color-hex').value=this.value" />
+          <input type="text" id="nc-color-hex" value="${newColor}" placeholder="#e07b54" oninput="document.getElementById('nc-color').value=this.value" />
+          <button type="button" onclick="const c=randColor();document.getElementById('nc-color').value=c;document.getElementById('nc-color-hex').value=c" style="padding:0 10px;height:44px;border:0.5px solid var(--border-strong);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:18px" title="Colore casuale">🎲</button>
+        </div>
+      </div>
       <button class="btn-primary" onclick="addCreator()">Aggiungi creator</button>
     </div>${list}`;
 }
@@ -375,10 +468,10 @@ function renderViewCartella(){
     list='<div class="section-label">Cartelle esistenti</div>';
     cartelle.forEach(c=>{
       const count=links.filter(l=>l.cartella_id===c.id).length;
-      list+=`<div class="cartella-row">
-        <span style="font-size:18px">📁</span>
-        <span class="cartella-name">${esc(c.name)}</span>
-        <span class="cartella-count">${count} link</span>
+      list+=`<div class="cartella-browse-row" style="margin-bottom:8px">
+        <span class="color-dot" style="background:${c.color||'#aaa'}"></span>
+        <span style="flex:1;font-size:15px">${esc(c.name)}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-hint);margin-right:8px">${count} link</span>
         <div class="row-actions">
           <button class="icon-btn" onclick='editCartella(${JSON.stringify(c)})'>✏️ Modifica</button>
           <button class="icon-btn danger" onclick="deleteCartella('${c.id}')">🗑 Elimina</button>
@@ -386,11 +479,19 @@ function renderViewCartella(){
       </div>`;
     });
   }
+  const newColor=randColor();
   el.innerHTML=`
     <div class="form-card">
       <div class="form-title">Nuova cartella</div>
       <div class="input-group"><div class="label">Nome</div>
         <input type="text" id="nk-name" placeholder="es. Tutorial, Ispirazione, AI Tools…" /></div>
+      <div class="input-group"><div class="label">Colore</div>
+        <div class="color-row">
+          <input type="color" id="nk-color" value="${newColor}" oninput="document.getElementById('nk-color-hex').value=this.value" />
+          <input type="text" id="nk-color-hex" value="${newColor}" placeholder="#5b8dd9" oninput="document.getElementById('nk-color').value=this.value" />
+          <button type="button" onclick="const c=randColor();document.getElementById('nk-color').value=c;document.getElementById('nk-color-hex').value=c" style="padding:0 10px;height:44px;border:0.5px solid var(--border-strong);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:18px" title="Colore casuale">🎲</button>
+        </div>
+      </div>
       <button class="btn-primary" onclick="addCartella()">Crea cartella</button>
     </div>${list}`;
 }
@@ -399,11 +500,10 @@ function renderViewCartella(){
 async function addLink(){
   const title=document.getElementById('nl-title').value.trim();
   const url=document.getElementById('nl-url').value.trim();
-  const creator_id=document.getElementById('nl-creator').value;
+  const creator_id=document.getElementById('nl-creator').value||null;
   const cartella_id=document.getElementById('nl-cartella').value||null;
   if(!title) return toast('Inserisci un titolo');
   if(!url) return toast('Inserisci un URL');
-  if(!creator_id) return toast('Seleziona un creator');
   const btn=document.getElementById('add-link-btn');
   btn.innerHTML='<span class="spinner"></span>Salvataggio…'; btn.disabled=true;
   try {
@@ -423,7 +523,6 @@ async function deleteLink(id){
     toast('Eliminato'); updateStatus();
     const q=document.getElementById('search-input').value.trim();
     if(q) renderSearch(q); else renderBrowse();
-    renderViewCartella();
   } catch(e){ toast('Errore'); }
 }
 
@@ -437,7 +536,7 @@ function editLink(l){
     <div class="input-group"><div class="label">URL</div>
       <input type="text" id="el-url" value="${esc(l.url)}" autocapitalize="none" /></div>
     <div class="input-group"><div class="label">Creator</div>
-      <select id="el-creator">${cOpts}</select></div>
+      <select id="el-creator"><option value="">— Nessuno —</option>${cOpts}</select></div>
     <div class="input-group"><div class="label">Cartella</div>
       <select id="el-cartella"><option value="">— Nessuna —</option>${kOpts}</select></div>
     <button class="btn-primary" onclick="saveLink('${l.id}')">Salva modifiche</button>`;
@@ -447,9 +546,9 @@ function editLink(l){
 async function saveLink(id){
   const title=document.getElementById('el-title').value.trim();
   const url=document.getElementById('el-url').value.trim();
-  const creator_id=document.getElementById('el-creator').value;
+  const creator_id=document.getElementById('el-creator').value||null;
   const cartella_id=document.getElementById('el-cartella').value||null;
-  if(!title||!url||!creator_id) return toast('Compila tutti i campi');
+  if(!title||!url) return toast('Compila titolo e URL');
   try {
     await api('PATCH','links?id=eq.'+id,{title,url,creator_id,cartella_id});
     const i=links.findIndex(l=>l.id===id);
@@ -463,12 +562,13 @@ async function saveLink(id){
 /* ── CRUD Creator ── */
 async function addCreator(){
   const raw=document.getElementById('nc-name').value.trim().replace(/^@/,'');
+  const color=document.getElementById('nc-color').value||randColor();
   if(!raw) return toast('Inserisci un handle');
   try {
-    const res=await api('POST','creators',{name:raw});
-    creators.push(res[0]);
+    const res=await api('POST','creators',{name:raw,color});
+    creators.push({...res[0],color});
     document.getElementById('nc-name').value='';
-    toast('Creator aggiunto ✓'); updateStatus(); renderViewCreator(); renderBrowse(); renderViewLink();
+    toast('Creator aggiunto ✓'); updateStatus(); renderViewCreator(); renderViewLink(); renderBrowse();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
@@ -478,28 +578,36 @@ function editCreator(c){
     <div class="input-group"><div class="label">Handle Instagram</div>
       <div class="input-prefix"><span>@</span>
       <input type="text" id="ec-name" value="${esc(c.name.replace(/^@/,''))}" autocapitalize="none" /></div></div>
+    <div class="input-group"><div class="label">Colore</div>
+      <div class="color-row">
+        <input type="color" id="ec-color" value="${c.color||'#e07b54'}" oninput="document.getElementById('ec-color-hex').value=this.value" />
+        <input type="text" id="ec-color-hex" value="${c.color||'#e07b54'}" oninput="document.getElementById('ec-color').value=this.value" />
+        <button type="button" onclick="const c=randColor();document.getElementById('ec-color').value=c;document.getElementById('ec-color-hex').value=c" style="padding:0 10px;height:44px;border:0.5px solid var(--border-strong);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:18px">🎲</button>
+      </div>
+    </div>
     <button class="btn-primary" onclick="saveCreator('${c.id}')">Salva modifiche</button>`;
   openModal();
 }
 
 async function saveCreator(id){
   const name=document.getElementById('ec-name').value.trim().replace(/^@/,'');
+  const color=document.getElementById('ec-color').value;
   if(!name) return toast('Inserisci un handle');
   try {
-    await api('PATCH','creators?id=eq.'+id,{name});
+    await api('PATCH','creators?id=eq.'+id,{name,color});
     const i=creators.findIndex(c=>c.id===id);
-    if(i>-1) creators[i].name=name;
+    if(i>-1){ creators[i].name=name; creators[i].color=color; }
     toast('Salvato ✓'); closeModal(); renderAll();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
 async function deleteCreator(id){
   const count=links.filter(l=>l.creator_id===id).length;
-  if(!confirm(count>0?`Questo creator ha ${count} link. Eliminare? I link rimarranno senza creator.`:'Eliminare questo creator?')) return;
+  if(!confirm(count>0?`Questo creator ha ${count} link. Eliminare?`:'Eliminare questo creator?')) return;
   try {
     await api('DELETE','creators?id=eq.'+id);
     creators=creators.filter(c=>c.id!==id);
-    if(currentCreator&&currentCreator.id===id) currentCreator=null;
+    if(currentSection&&currentSection.id===id) currentSection=null;
     toast('Eliminato'); updateStatus(); renderAll();
   } catch(e){ toast('Errore'); }
 }
@@ -507,12 +615,14 @@ async function deleteCreator(id){
 /* ── CRUD Cartella ── */
 async function addCartella(){
   const name=document.getElementById('nk-name').value.trim();
+  const color=document.getElementById('nk-color').value||randColor();
   if(!name) return toast('Inserisci un nome');
   try {
-    const res=await api('POST','cartelle',{name});
-    cartelle.push(res[0]);
+    const sort_order=cartelle.length;
+    const res=await api('POST','cartelle',{name,color,sort_order});
+    cartelle.push({...res[0],color});
     document.getElementById('nk-name').value='';
-    toast('Cartella creata ✓'); renderViewCartella(); renderViewLink();
+    toast('Cartella creata ✓'); renderViewCartella(); renderViewLink(); renderBrowse();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
@@ -521,33 +631,38 @@ function editCartella(c){
   document.getElementById('modal-body').innerHTML=`
     <div class="input-group"><div class="label">Nome</div>
       <input type="text" id="ek-name" value="${esc(c.name)}" /></div>
+    <div class="input-group"><div class="label">Colore</div>
+      <div class="color-row">
+        <input type="color" id="ek-color" value="${c.color||'#5b8dd9'}" oninput="document.getElementById('ek-color-hex').value=this.value" />
+        <input type="text" id="ek-color-hex" value="${c.color||'#5b8dd9'}" oninput="document.getElementById('ek-color').value=this.value" />
+        <button type="button" onclick="const c=randColor();document.getElementById('ek-color').value=c;document.getElementById('ek-color-hex').value=c" style="padding:0 10px;height:44px;border:0.5px solid var(--border-strong);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-size:18px">🎲</button>
+      </div>
+    </div>
     <button class="btn-primary" onclick="saveCartella('${c.id}')">Salva modifiche</button>`;
   openModal();
 }
 
 async function saveCartella(id){
   const name=document.getElementById('ek-name').value.trim();
+  const color=document.getElementById('ek-color').value;
   if(!name) return toast('Inserisci un nome');
   try {
-    await api('PATCH','cartelle?id=eq.'+id,{name});
+    await api('PATCH','cartelle?id=eq.'+id,{name,color});
     const i=cartelle.findIndex(c=>c.id===id);
-    if(i>-1) cartelle[i].name=name;
-    toast('Salvato ✓'); closeModal(); renderViewCartella(); renderViewLink();
-    const q=document.getElementById('search-input').value.trim();
-    if(q) renderSearch(q); else renderBrowse();
+    if(i>-1){ cartelle[i].name=name; cartelle[i].color=color; }
+    toast('Salvato ✓'); closeModal(); renderAll();
   } catch(e){ toast('Errore: '+e.message); }
 }
 
 async function deleteCartella(id){
   const count=links.filter(l=>l.cartella_id===id).length;
-  if(!confirm(count>0?`Questa cartella contiene ${count} link. Eliminare?`:'Eliminare questa cartella?')) return;
+  if(!confirm(count>0?`Questa cartella contiene ${count} link. Eliminare?`:'Eliminare?')) return;
   try {
     await api('DELETE','cartelle?id=eq.'+id);
     cartelle=cartelle.filter(c=>c.id!==id);
     links.forEach(l=>{ if(l.cartella_id===id) l.cartella_id=null; });
-    toast('Eliminata'); renderViewCartella(); renderViewLink();
-    const q=document.getElementById('search-input').value.trim();
-    if(q) renderSearch(q); else renderBrowse();
+    if(currentSection&&currentSection.id===id) currentSection=null;
+    toast('Eliminata'); renderViewCartella(); renderViewLink(); renderBrowse();
   } catch(e){ toast('Errore'); }
 }
 
@@ -590,15 +705,8 @@ function renderSearch(q){
   el.innerHTML=html;
 }
 
-/* ── Modal ── */
-function openModal(){
-  document.getElementById('modal-overlay').classList.add('open');
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal(){
-  document.getElementById('modal-overlay').classList.remove('open');
-  document.getElementById('modal').classList.remove('open');
-}
+function openModal(){ document.getElementById('modal-overlay').classList.add('open'); document.getElementById('modal').classList.add('open'); }
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); document.getElementById('modal').classList.remove('open'); }
 
 loadAll();
 </script>
