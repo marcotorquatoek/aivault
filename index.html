@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: 4.6 -->
+<!-- version: 4.7 -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -150,7 +150,21 @@
     .modal-close { width: 30px; height: 30px; border: none; background: var(--bg); border-radius: 50%; cursor: pointer; font-size: 16px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
     .modal-body { padding: 16px; }
 
-    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--accent-fg); padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 300; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+    /* Link sheet */
+    .lsheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: none; }
+    .lsheet-overlay.open { display: block; }
+    .lsheet { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--surface); border-radius: 20px 20px 0 0; z-index: 201; display: flex; flex-direction: column; height: 88vh; transform: translateX(-50%) translateY(100%); transition: transform 0.35s cubic-bezier(0.32,0.72,0,1); }
+    .lsheet.open { transform: translateX(-50%) translateY(0); }
+    .lsheet-handle { width: 36px; height: 4px; background: var(--border-strong); border-radius: 2px; margin: 12px auto 0; flex-shrink: 0; }
+    .lsheet-header { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
+    .lsheet-title { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lsheet-ext { padding: 6px 12px; background: var(--bg); border: 0.5px solid var(--border); border-radius: 8px; font-size: 12px; cursor: pointer; color: var(--text-muted); font-family: 'DM Sans', sans-serif; white-space: nowrap; }
+    .lsheet-close { width: 28px; height: 28px; border: none; background: var(--bg); border-radius: 50%; cursor: pointer; font-size: 15px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .lsheet-iframe { flex: 1; border: none; width: 100%; }
+    .lsheet-blocked { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 40px 24px; text-align: center; flex: 1; }
+    .lsheet-blocked-icon { font-size: 40px; }
+    .lsheet-blocked p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+    .lsheet-blocked button { padding: 11px 24px; background: var(--text); color: white; border: none; border-radius: var(--radius); font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; } position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--accent-fg); padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 300; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
     .toast.show { opacity: 1; }
     .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: -2px; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -163,7 +177,7 @@
   <div class="header">
     <div class="header-top">
       <h1><svg width="22" height="22" viewBox="0 0 64 64" style="vertical-align:-4px;margin-right:7px" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#1a1a1a"/><path d="M20 18 L20 46 L26 40 L32 46 L38 40 L44 46 L44 18 Z" fill="none" stroke="white" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44" cy="44" r="10" fill="#5b8dd9"/><path d="M40 44 L43 47 L48 41" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>AI Links Vault</h1>
-      <span class="version-badge">v4.6</span>
+      <span class="version-badge">v4.7</span>
     </div>
     <div class="status" id="status-text">Connessione…</div>
   </div>
@@ -188,6 +202,22 @@
     <div id="view-link" class="section" style="display:none"></div>
     <div id="view-creator" class="section" style="display:none"></div>
     <div id="view-cartella" class="section" style="display:none"></div>
+  </div>
+</div>
+
+<div class="lsheet-overlay" id="lsheet-overlay" onclick="closeLSheet()"></div>
+<div class="lsheet" id="lsheet">
+  <div class="lsheet-handle"></div>
+  <div class="lsheet-header">
+    <div class="lsheet-title" id="lsheet-title"></div>
+    <button class="lsheet-ext" onclick="openLSheetExternal()">↗ Apri browser</button>
+    <button class="lsheet-close" onclick="closeLSheet()">✕</button>
+  </div>
+  <iframe class="lsheet-iframe" id="lsheet-iframe" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>
+  <div class="lsheet-blocked" id="lsheet-blocked">
+    <div class="lsheet-blocked-icon">🚫</div>
+    <p>Questo sito non permette l'anteprima in-app.</p>
+    <button onclick="openLSheetExternal()">↗ Apri nel browser</button>
   </div>
 </div>
 
@@ -367,7 +397,7 @@ function linkCardHtml(l,q){
       </div>
     </div>
     <div class="link-actions">
-      <button class="btn-open" onclick="openLink('${uE}')">↗ Apri</button>
+      <button class="btn-open" onclick="openLink('${uE}', '${esc(l.title)}')">↗ Apri</button>
       <button class="btn-edit" onclick='editLink(${JSON.stringify(l)})'>✏️</button>
       <button class="btn-del" onclick="deleteLink('${l.id}')">🗑</button>
     </div>
@@ -720,12 +750,45 @@ function renderSearch(q){
 function openModal(){ document.getElementById('modal-overlay').classList.add('open'); document.getElementById('modal').classList.add('open'); }
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); document.getElementById('modal').classList.remove('open'); }
 
-function openLink(url){
-  localStorage.setItem('vault_main', currentMain);
-  localStorage.setItem('vault_section', currentSection ? JSON.stringify(currentSection) : '');
-  localStorage.setItem('vault_ts', Date.now());
-  window.open(url, '_blank');
+let _lsheetUrl = '';
+function openLink(url, title){
+  _lsheetUrl = url;
+  document.getElementById('lsheet-title').textContent = title || url;
+  const iframe = document.getElementById('lsheet-iframe');
+  const blocked = document.getElementById('lsheet-blocked');
+  iframe.style.display = 'block';
+  blocked.style.display = 'none';
+  blocked.style.flexDirection = 'column';
+  iframe.src = url;
+  // Detect blocked sites after a short delay
+  iframe.onload = () => {
+    try {
+      // If cross-origin, this throws — meaning it loaded (we just can't read it)
+      void iframe.contentWindow.location.href;
+      // If we get here it's same-origin — fine
+    } catch(e) {
+      // cross-origin = loaded fine in iframe
+    }
+  };
+  setTimeout(() => {
+    try {
+      const loc = iframe.contentWindow.location.href;
+      if (!loc || loc === 'about:blank') showLSheetBlocked();
+    } catch(e) { /* cross-origin, loaded fine */ }
+  }, 4000);
+  document.getElementById('lsheet-overlay').classList.add('open');
+  document.getElementById('lsheet').classList.add('open');
 }
+function showLSheetBlocked(){
+  document.getElementById('lsheet-iframe').style.display = 'none';
+  document.getElementById('lsheet-blocked').style.display = 'flex';
+}
+function closeLSheet(){
+  document.getElementById('lsheet-overlay').classList.remove('open');
+  document.getElementById('lsheet').classList.remove('open');
+  setTimeout(() => { document.getElementById('lsheet-iframe').src = ''; }, 400);
+}
+function openLSheetExternal(){ window.open(_lsheetUrl, '_blank'); }
 
 function restoreState(){
   const ts = parseInt(localStorage.getItem('vault_ts')||'0');
