@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: 4.7 -->
+<!-- version: 4.8 -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -177,7 +177,7 @@
   <div class="header">
     <div class="header-top">
       <h1><svg width="22" height="22" viewBox="0 0 64 64" style="vertical-align:-4px;margin-right:7px" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#1a1a1a"/><path d="M20 18 L20 46 L26 40 L32 46 L38 40 L44 46 L44 18 Z" fill="none" stroke="white" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="44" cy="44" r="10" fill="#5b8dd9"/><path d="M40 44 L43 47 L48 41" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>AI Links Vault</h1>
-      <span class="version-badge">v4.7</span>
+      <span class="version-badge">v4.8</span>
     </div>
     <div class="status" id="status-text">Connessione…</div>
   </div>
@@ -235,8 +235,8 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const SB = 'https://kyqhkromuwjenkffvkqe.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5cWhrcm9tdXdqZW5rZmZ2a3FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDQ1NzAsImV4cCI6MjA5NDA4MDU3MH0.QuDYyRVZy0MSxVzd3KVT8R6I1z8BFU3kh0vgr-7BiQw';
+const SB = 'https://zdwzombpaixkcryfpkxg.supabase.co';
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpkd3pvbWJwYWl4a2NyeWZwa3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MzczMTAsImV4cCI6MjA5NzMxMzMxMH0.ttAPvk-kV_BWC8RH43eVNXsN6HglLIQhp0rieWwjGPw';
 const H = {'Content-Type':'application/json','apikey':KEY,'Authorization':'Bearer '+KEY};
 
 const PALETTE = ['#e07b54','#5b8dd9','#6abf8a','#b87fcf','#d4a843','#5bbfbf','#d96b8a','#7a9e6b','#c46b3a','#7b7fd4','#e05c8a','#4aa8a0'];
@@ -264,13 +264,13 @@ async function api(method, path, body){
 async function loadAll(){
   try {    // Run migrations silently
     await Promise.allSettled([
-      api('PATCH','cartelle?id=neq.00000000-0000-0000-0000-000000000000',{}), // no-op
+      api('PATCH','aivault_cartelle?id=neq.00000000-0000-0000-0000-000000000000',{}), // no-op
       fetch(SB+'/rest/v1/rpc/exec',{method:'POST',headers:H}), // no-op
     ]);
     [creators, links, cartelle] = await Promise.all([
-      api('GET','creators?select=*&order=created_at.asc'),
-      api('GET','links?select=*&order=created_at.desc'),
-      api('GET','cartelle?select=*&order=sort_order.asc,created_at.asc')
+      api('GET','aivault_creators?select=*&order=created_at.asc'),
+      api('GET','aivault_links?select=*&order=created_at.desc'),
+      api('GET','aivault_cartelle?select=*&order=sort_order.asc,created_at.asc')
     ]);
     // Assign missing colors locally
     creators.forEach(c=>{ if(!c.color) c.color=randColor(); });
@@ -447,7 +447,7 @@ async function inlineAddCreator(){
   if(!raw) return toast('Inserisci un handle');
   try {
     const color=randColor();
-    const res=await api('POST','creators',{name:raw,color});
+    const res=await api('POST','aivault_creators',{name:raw,color});
     const c={...res[0],color};
     creators.push(c);
     toast('Creator aggiunto ✓');
@@ -549,7 +549,7 @@ async function addLink(){
   const btn=document.getElementById('add-link-btn');
   btn.innerHTML='<span class="spinner"></span>Salvataggio…'; btn.disabled=true;
   try {
-    const res=await api('POST','links',{title,url,creator_id,cartella_id});
+    const res=await api('POST','aivault_links',{title,url,creator_id,cartella_id});
     links.unshift(res[0]);
     document.getElementById('nl-title').value='';
     document.getElementById('nl-url').value='';
@@ -560,7 +560,7 @@ async function addLink(){
 async function deleteLink(id){
   if(!confirm('Eliminare questo link?')) return;
   try {
-    await api('DELETE','links?id=eq.'+id);
+    await api('DELETE','aivault_links?id=eq.'+id);
     links=links.filter(l=>l.id!==id);
     toast('Eliminato'); updateStatus();
     const q=document.getElementById('search-input').value.trim();
@@ -592,7 +592,7 @@ async function saveLink(id){
   const cartella_id=document.getElementById('el-cartella').value||null;
   if(!title||!url) return toast('Compila titolo e URL');
   try {
-    await api('PATCH','links?id=eq.'+id,{title,url,creator_id,cartella_id});
+    await api('PATCH','aivault_links?id=eq.'+id,{title,url,creator_id,cartella_id});
     const i=links.findIndex(l=>l.id===id);
     if(i>-1) links[i]={...links[i],title,url,creator_id,cartella_id};
     toast('Salvato ✓'); closeModal(); updateStatus();
@@ -607,7 +607,7 @@ async function addCreator(){
   const color=document.getElementById('nc-color').value||randColor();
   if(!raw) return toast('Inserisci un handle');
   try {
-    const res=await api('POST','creators',{name:raw,color});
+    const res=await api('POST','aivault_creators',{name:raw,color});
     creators.push({...res[0],color});
     document.getElementById('nc-name').value='';
     toast('Creator aggiunto ✓'); updateStatus(); renderViewCreator(); renderViewLink(); renderBrowse();
@@ -636,7 +636,7 @@ async function saveCreator(id){
   const color=document.getElementById('ec-color').value;
   if(!name) return toast('Inserisci un handle');
   try {
-    await api('PATCH','creators?id=eq.'+id,{name,color});
+    await api('PATCH','aivault_creators?id=eq.'+id,{name,color});
     const i=creators.findIndex(c=>c.id===id);
     if(i>-1){ creators[i].name=name; creators[i].color=color; }
     toast('Salvato ✓'); closeModal(); renderAll();
@@ -647,7 +647,7 @@ async function deleteCreator(id){
   const count=links.filter(l=>l.creator_id===id).length;
   if(!confirm(count>0?`Questo creator ha ${count} link. Eliminare?`:'Eliminare questo creator?')) return;
   try {
-    await api('DELETE','creators?id=eq.'+id);
+    await api('DELETE','aivault_creators?id=eq.'+id);
     creators=creators.filter(c=>c.id!==id);
     if(currentSection&&currentSection.id===id) currentSection=null;
     toast('Eliminato'); updateStatus(); renderAll();
@@ -661,7 +661,7 @@ async function addCartella(){
   if(!name) return toast('Inserisci un nome');
   try {
     const sort_order=cartelle.length;
-    const res=await api('POST','cartelle',{name,color,sort_order});
+    const res=await api('POST','aivault_cartelle',{name,color,sort_order});
     cartelle.push({...res[0],color});
     document.getElementById('nk-name').value='';
     toast('Cartella creata ✓'); renderViewCartella(); renderViewLink(); renderBrowse();
@@ -689,7 +689,7 @@ async function saveCartella(id){
   const color=document.getElementById('ek-color').value;
   if(!name) return toast('Inserisci un nome');
   try {
-    await api('PATCH','cartelle?id=eq.'+id,{name,color});
+    await api('PATCH','aivault_cartelle?id=eq.'+id,{name,color});
     const i=cartelle.findIndex(c=>c.id===id);
     if(i>-1){ cartelle[i].name=name; cartelle[i].color=color; }
     toast('Salvato ✓'); closeModal(); renderAll();
@@ -700,7 +700,7 @@ async function deleteCartella(id){
   const count=links.filter(l=>l.cartella_id===id).length;
   if(!confirm(count>0?`Questa cartella contiene ${count} link. Eliminare?`:'Eliminare?')) return;
   try {
-    await api('DELETE','cartelle?id=eq.'+id);
+    await api('DELETE','aivault_cartelle?id=eq.'+id);
     cartelle=cartelle.filter(c=>c.id!==id);
     links.forEach(l=>{ if(l.cartella_id===id) l.cartella_id=null; });
     if(currentSection&&currentSection.id===id) currentSection=null;
